@@ -293,6 +293,7 @@ const serialize_1 = __nccwpck_require__(6823);
 const path_1 = __importDefault(__nccwpck_require__(1017));
 function submitExampleItem(ex) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Starting submission for "${ex.title}" for file "${ex.fileName}"`);
         const baseUrl = core.getInput('base-url');
         if (!baseUrl) {
             throw new Error('baseUrl not provided');
@@ -330,6 +331,7 @@ function run() {
         try {
             const calcDir = core.getInput('calc-dir', { required: true });
             const examplesPath = path_1.default.resolve(calcDir, 'examples.js');
+            core.debug(`examples file path: ${examplesPath}`);
             const exists = fs_1.default.existsSync(examplesPath);
             if (!exists) {
                 throw new Error('Examples.js file not found.');

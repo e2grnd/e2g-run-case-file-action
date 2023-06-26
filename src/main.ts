@@ -15,6 +15,7 @@ type TExamplesFile = {
 }
 
 async function submitExampleItem(ex: TExampleItem): Promise<void> {
+  core.debug(`Starting submission for "${ex.title}" for file "${ex.fileName}"`)
   const baseUrl = core.getInput('base-url')
   if (!baseUrl) {
     throw new Error('baseUrl not provided')
@@ -53,6 +54,7 @@ async function run(): Promise<void> {
   try {
     const calcDir: string = core.getInput('calc-dir', {required: true})
     const examplesPath = path.resolve(calcDir, 'examples.js')
+    core.debug(`examples file path: ${examplesPath}`)
     const exists = fs.existsSync(examplesPath)
     if (!exists) {
       throw new Error('Examples.js file not found.')
