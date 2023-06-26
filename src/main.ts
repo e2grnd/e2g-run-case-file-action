@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import fetch from 'node-fetch'
 import * as fsAll from 'fs'
 import {normalizePayload} from './compatibility'
+import {protoPayload} from './serialize'
 
 async function run(): Promise<void> {
   try {
@@ -17,6 +18,8 @@ async function run(): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normalized = normalizePayload(caseParsed) as any
     core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
+    const protoAsJSON = protoPayload(normalized)
+    core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
     const uri = `https://${baseUrl}/api/job/create`
     core.debug(`Submitting to URI: "${uri}"`)
     const response = await fetch(uri, {
@@ -25,7 +28,7 @@ async function run(): Promise<void> {
         'x-internal-auth-secret': authSecret,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(normalized)
+      body: JSON.stringify(protoAsJSON)
     })
     const text = await response.text()
     if (!response.ok)

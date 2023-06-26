@@ -841,6 +841,7 @@ __metadata:
     eslint-plugin-github: ^4.7.0
     immutable: ^4.3.0
     js-yaml: ^4.1.0
+    lodash: ^4.17.21
     lodash.find: ^4.6.0
     node-fetch: ^3.3.1
     prettier: ^2.8.8
@@ -2141,6 +2142,13 @@ __metadata:
   version: 4.3.1
   resolution: "lodash.upperfirst@npm:4.3.1"
   checksum: cadec6955900afe1928cc60cdc4923a79c2ef991e42665419cc81630ed9b4f952a1093b222e0141ab31cbc4dba549f97ec28ff67929d71e01861c97188a5fa83
+  languageName: node
+  linkType: hard
+
+"lodash@npm:^4.17.21":
+  version: 4.17.21
+  resolution: "lodash@npm:4.17.21"
+  checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
   languageName: node
   linkType: hard
 

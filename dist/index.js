@@ -289,6 +289,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const fsAll = __importStar(__nccwpck_require__(7147));
 const compatibility_1 = __nccwpck_require__(5830);
+const serialize_1 = __nccwpck_require__(2365);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -303,6 +304,8 @@ function run() {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const normalized = (0, compatibility_1.normalizePayload)(caseParsed);
             core.debug(`Normalized payload: ${JSON.stringify(normalized)}`);
+            const protoAsJSON = (0, serialize_1.protoPayload)(normalized);
+            core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`);
             const uri = `https://${baseUrl}/api/job/create`;
             core.debug(`Submitting to URI: "${uri}"`);
             const response = yield (0, node_fetch_1.default)(uri, {
@@ -311,7 +314,7 @@ function run() {
                     'x-internal-auth-secret': authSecret,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(normalized)
+                body: JSON.stringify(protoAsJSON)
             });
             const text = yield response.text();
             if (!response.ok)
@@ -15748,6 +15751,14 @@ exports["default"] = _default;
 
 })));
 //# sourceMappingURL=ponyfill.es2018.js.map
+
+
+/***/ }),
+
+/***/ 2365:
+/***/ ((module) => {
+
+module.exports = eval("require")("./serialize");
 
 
 /***/ }),
