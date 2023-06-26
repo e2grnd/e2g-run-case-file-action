@@ -17,10 +17,15 @@ async function run(): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normalized = normalizePayload(caseParsed) as any
     core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
-    await fetch(`https://${baseUrl}/api/job/create`, {
+    const uri = `https://${baseUrl}/api/job/create`
+    core.debug(`Submitting to URI: "${uri}"`)
+    await fetch(uri, {
       method: 'post',
-      headers: {'x-internal-auth-secret': authSecret},
-      body: normalized
+      headers: {
+        'x-internal-auth-secret': authSecret,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(normalized)
     })
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
