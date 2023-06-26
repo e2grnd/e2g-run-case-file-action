@@ -19,7 +19,7 @@ async function run(): Promise<void> {
     core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
     const uri = `https://${baseUrl}/api/job/create`
     core.debug(`Submitting to URI: "${uri}"`)
-    await fetch(uri, {
+    const response = await fetch(uri, {
       method: 'post',
       headers: {
         'x-internal-auth-secret': authSecret,
@@ -27,6 +27,8 @@ async function run(): Promise<void> {
       },
       body: JSON.stringify(normalized)
     })
+    if (!response.ok)
+      throw new Error(`unexpected response ${response.statusText}`)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

@@ -305,7 +305,7 @@ function run() {
             core.debug(`Normalized payload: ${JSON.stringify(normalized)}`);
             const uri = `https://${baseUrl}/api/job/create`;
             core.debug(`Submitting to URI: "${uri}"`);
-            yield (0, node_fetch_1.default)(uri, {
+            const response = yield (0, node_fetch_1.default)(uri, {
                 method: 'post',
                 headers: {
                     'x-internal-auth-secret': authSecret,
@@ -313,6 +313,8 @@ function run() {
                 },
                 body: JSON.stringify(normalized)
             });
+            if (!response.ok)
+                throw new Error(`unexpected response ${response.statusText}`);
         }
         catch (error) {
             if (error instanceof Error)
