@@ -23,10 +23,10 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
   const authSecret = core.getInput('auth-secret')
 
   const calcDir: string = core.getInput('calc-dir', {required: true})
-  const calcDirName = path.basename(path.dirname(calcDir))
+  const calcDirName = path.basename(calcDir)
   core.debug(`calcDirName: ${calcDirName}`)
   const basePath = core.getInput('static-dir')
-  const filePath = path.join(basePath, calcDirName, ex.fileName)
+  const filePath = path.join(basePath, 'examples', calcDirName, ex.fileName)
 
   const fileContents = await fs.promises.readFile(filePath, 'utf-8')
   const caseParsed = JSON.parse(fileContents)
