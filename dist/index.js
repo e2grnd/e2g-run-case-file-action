@@ -56,8 +56,7 @@ const normalizePayload = (payload) => {
     let version;
     let externalError;
     const payloadCopy = (0, immutable_1.fromJS)(payload).toJS();
-    if (typeof payloadCopy.fields !== 'undefined' &&
-        typeof payloadCopy.activeCalculator !== 'undefined') {
+    if (typeof payloadCopy.fields !== 'undefined' && typeof payloadCopy.activeCalculator !== 'undefined') {
         // handle original save case/example format
         ;
         ({ request } = payloadCopy);
@@ -65,13 +64,9 @@ const normalizePayload = (payload) => {
         calculatorName = payloadCopy.activeCalculator;
         ({ timeStamp } = payloadCopy);
         ({ version } = payloadCopy);
-        reportHeader =
-            typeof payloadCopy.report !== 'undefined'
-                ? payloadCopy.report.header
-                : undefined;
+        reportHeader = typeof payloadCopy.report !== 'undefined' ? payloadCopy.report.header : undefined;
     }
-    else if (typeof payloadCopy.fields !== 'undefined' &&
-        typeof payloadCopy.activeCalculator === 'undefined') {
+    else if (typeof payloadCopy.fields !== 'undefined' && typeof payloadCopy.activeCalculator === 'undefined') {
         // handle original case history format
         ;
         ({ request } = payloadCopy);
@@ -97,10 +92,7 @@ const normalizePayload = (payload) => {
         ({ userAgent } = payloadCopy.metadata);
         ({ timeStamp } = payloadCopy.metadata);
         ({ version } = payloadCopy.metadata);
-        reportHeader =
-            typeof payloadCopy.metadata.report !== 'undefined'
-                ? payloadCopy.metadata.report.header
-                : undefined;
+        reportHeader = typeof payloadCopy.metadata.report !== 'undefined' ? payloadCopy.metadata.report.header : undefined;
     }
     else if (typeof payloadCopy.metadata.externalError !== 'undefined') {
         request = payloadCopy;
@@ -109,10 +101,7 @@ const normalizePayload = (payload) => {
         ({ userAgent } = payloadCopy.metadata);
         ({ timeStamp } = payloadCopy.metadata);
         ({ version } = payloadCopy.metadata);
-        reportHeader =
-            typeof payloadCopy.metadata.report !== 'undefined'
-                ? payloadCopy.metadata.report.header
-                : undefined;
+        reportHeader = typeof payloadCopy.metadata.report !== 'undefined' ? payloadCopy.metadata.report.header : undefined;
         ({ externalError } = payloadCopy.metadata);
     }
     else if (typeof payloadCopy.metadata.unitSystem !== 'undefined') {
@@ -122,10 +111,7 @@ const normalizePayload = (payload) => {
         ({ userAgent } = payloadCopy.metadata);
         ({ timeStamp } = payloadCopy.metadata);
         ({ version } = payloadCopy.metadata);
-        reportHeader =
-            typeof payloadCopy.metadata.report !== 'undefined'
-                ? payloadCopy.metadata.report.header
-                : undefined;
+        reportHeader = typeof payloadCopy.metadata.report !== 'undefined' ? payloadCopy.metadata.report.header : undefined;
     }
     else {
         request = payloadCopy;
@@ -207,20 +193,10 @@ const fixNumericTypes = (calcCase) => {
             d.forEach(o => {
                 const param = o;
                 if (o.valueType && o.valueType === 1) {
-                    param.value =
-                        typeof param.value === 'string'
-                            ? Number.isNaN(parseInt(param.value, 10))
-                                ? undefined
-                                : parseInt(param.value, 10)
-                            : param.value;
+                    param.value = typeof param.value === 'string' ? (Number.isNaN(parseInt(param.value, 10)) ? undefined : parseInt(param.value, 10)) : param.value;
                 }
                 if (param.valueType && param.valueType === 2) {
-                    param.value =
-                        typeof param.value === 'string'
-                            ? Number.isNaN(parseFloat(param.value))
-                                ? undefined
-                                : parseFloat(param.value)
-                            : param.value;
+                    param.value = typeof param.value === 'string' ? (Number.isNaN(parseFloat(param.value)) ? undefined : parseFloat(param.value)) : param.value;
                 }
             });
         }
@@ -231,8 +207,7 @@ const fixNumericTypes = (calcCase) => {
 exports.fixNumericTypes = fixNumericTypes;
 const requiresConversion = (calcCase) => {
     const version = (0, lodash_find_1.default)(calcCase.metadata.params, ['name', 'version']).value;
-    if (typeof version !== 'undefined' &&
-        parseInt(version.split('.')[2], 10) >= 45) {
+    if (typeof version !== 'undefined' && parseInt(version.split('.')[2], 10) >= 45) {
         return false;
     }
     return true;
@@ -301,9 +276,13 @@ function submitExampleItem(ex) {
         const authSecret = core.getInput('auth-secret');
         const calcDir = core.getInput('calc-dir', { required: true });
         const calcDirName = path_1.default.basename(calcDir);
-        core.debug(`calcDirName: ${calcDirName}`);
+        core.info(`calcDirName: ${calcDirName}`);
         const basePath = core.getInput('static-dir');
         const filePath = path_1.default.join(basePath, 'examples', calcDirName, ex.fileName);
+        if (!fs_1.default.existsSync(filePath)) {
+            core.error(`Example file for calculator ${calcDirName} not found: ${ex.fileName}`);
+            return;
+        }
         const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
         const caseParsed = JSON.parse(fileContents);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -312,7 +291,7 @@ function submitExampleItem(ex) {
         const protoAsJSON = (0, serialize_1.protoPayload)(normalized);
         core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`);
         const uri = `https://${baseUrl}/api/job/create`;
-        core.debug(`Submitting to URI: "${uri}"`);
+        core.info(`Submitting to URI: "${uri}"`);
         const response = yield (0, node_fetch_1.default)(uri, {
             method: 'POST',
             headers: {
@@ -347,7 +326,9 @@ function run() {
             yield crappyConvertToCommonJSImports(examplesPath);
             const examples = yield Promise.resolve(`${examplesPath}`).then(s => __importStar(require(s)));
             core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`);
-            yield Promise.all([...examples.USCustomary, ...examples.Metric].map(submitExampleItem));
+            yield Promise.all([...examples.USCustomary, ...examples.Metric].map((ex) => __awaiter(this, void 0, void 0, function* () {
+                return core.group(`Submitting example "${ex.title}" [${ex.fileName}]`, () => __awaiter(this, void 0, void 0, function* () { return submitExampleItem(ex); }));
+            })));
         }
         catch (error) {
             if (error instanceof Error)

@@ -3,24 +3,8 @@
 import {fromJS} from 'immutable'
 import find from 'lodash.find'
 
-export const requestMetadata = (options: {
-  request: any
-  unitSystem: any
-  reportHeader: any
-  userAgent: any
-  version: any
-  timeStamp: any
-  externalError: any
-}): any => {
-  const {
-    request,
-    version,
-    unitSystem,
-    userAgent,
-    reportHeader,
-    timeStamp,
-    externalError
-  } = options
+export const requestMetadata = (options: {request: any; unitSystem: any; reportHeader: any; userAgent: any; version: any; timeStamp: any; externalError: any}): any => {
+  const {request, version, unitSystem, userAgent, reportHeader, timeStamp, externalError} = options
   let requestCopy = fromJS(request)
   requestCopy = requestCopy
     .setIn(['metadata', 'params', 0, 'name'], 'version')
@@ -60,24 +44,15 @@ export const normalizePayload = (payload: unknown): unknown => {
   let version
   let externalError
   const payloadCopy = fromJS(payload).toJS()
-  if (
-    typeof payloadCopy.fields !== 'undefined' &&
-    typeof payloadCopy.activeCalculator !== 'undefined'
-  ) {
+  if (typeof payloadCopy.fields !== 'undefined' && typeof payloadCopy.activeCalculator !== 'undefined') {
     // handle original save case/example format
     ;({request} = payloadCopy)
     unitSystem = payloadCopy.activeUnitSystem
     calculatorName = payloadCopy.activeCalculator
     ;({timeStamp} = payloadCopy)
     ;({version} = payloadCopy)
-    reportHeader =
-      typeof payloadCopy.report !== 'undefined'
-        ? payloadCopy.report.header
-        : undefined
-  } else if (
-    typeof payloadCopy.fields !== 'undefined' &&
-    typeof payloadCopy.activeCalculator === 'undefined'
-  ) {
+    reportHeader = typeof payloadCopy.report !== 'undefined' ? payloadCopy.report.header : undefined
+  } else if (typeof payloadCopy.fields !== 'undefined' && typeof payloadCopy.activeCalculator === 'undefined') {
     // handle original case history format
     ;({request} = payloadCopy)
     unitSystem = payloadCopy.activeUnitSystem
@@ -99,10 +74,7 @@ export const normalizePayload = (payload: unknown): unknown => {
     ;({userAgent} = payloadCopy.metadata)
     ;({timeStamp} = payloadCopy.metadata)
     ;({version} = payloadCopy.metadata)
-    reportHeader =
-      typeof payloadCopy.metadata.report !== 'undefined'
-        ? payloadCopy.metadata.report.header
-        : undefined
+    reportHeader = typeof payloadCopy.metadata.report !== 'undefined' ? payloadCopy.metadata.report.header : undefined
   } else if (typeof payloadCopy.metadata.externalError !== 'undefined') {
     request = payloadCopy
     ;({unitSystem} = payloadCopy.metadata)
@@ -110,10 +82,7 @@ export const normalizePayload = (payload: unknown): unknown => {
     ;({userAgent} = payloadCopy.metadata)
     ;({timeStamp} = payloadCopy.metadata)
     ;({version} = payloadCopy.metadata)
-    reportHeader =
-      typeof payloadCopy.metadata.report !== 'undefined'
-        ? payloadCopy.metadata.report.header
-        : undefined
+    reportHeader = typeof payloadCopy.metadata.report !== 'undefined' ? payloadCopy.metadata.report.header : undefined
     ;({externalError} = payloadCopy.metadata)
   } else if (typeof payloadCopy.metadata.unitSystem !== 'undefined') {
     request = payloadCopy
@@ -122,10 +91,7 @@ export const normalizePayload = (payload: unknown): unknown => {
     ;({userAgent} = payloadCopy.metadata)
     ;({timeStamp} = payloadCopy.metadata)
     ;({version} = payloadCopy.metadata)
-    reportHeader =
-      typeof payloadCopy.metadata.report !== 'undefined'
-        ? payloadCopy.metadata.report.header
-        : undefined
+    reportHeader = typeof payloadCopy.metadata.report !== 'undefined' ? payloadCopy.metadata.report.header : undefined
   } else {
     request = payloadCopy
     let result = find(payloadCopy.metadata.params, ['name', 'unitSystem'])
@@ -184,10 +150,7 @@ export const normalizePayload = (payload: unknown): unknown => {
   })
 }
 
-const transformRequestData = (
-  data: {tables: any; params: any; keywordGroups: any[]},
-  transformer: {(d: any[]): any[]; (arg0: any): any}
-): any => {
+const transformRequestData = (data: {tables: any; params: any; keywordGroups: any[]}, transformer: {(d: any[]): any[]; (arg0: any): any}): any => {
   const transformedTables = transformer(data.tables)
   const transformedParams = transformer(data.params)
   const transformedKeywordGroups = data.keywordGroups.map(kg => {
@@ -212,20 +175,10 @@ export const fixNumericTypes = (calcCase: any): any => {
       d.forEach(o => {
         const param = o
         if (o.valueType && o.valueType === 1) {
-          param.value =
-            typeof param.value === 'string'
-              ? Number.isNaN(parseInt(param.value, 10))
-                ? undefined
-                : parseInt(param.value, 10)
-              : param.value
+          param.value = typeof param.value === 'string' ? (Number.isNaN(parseInt(param.value, 10)) ? undefined : parseInt(param.value, 10)) : param.value
         }
         if (param.valueType && param.valueType === 2) {
-          param.value =
-            typeof param.value === 'string'
-              ? Number.isNaN(parseFloat(param.value))
-                ? undefined
-                : parseFloat(param.value)
-              : param.value
+          param.value = typeof param.value === 'string' ? (Number.isNaN(parseFloat(param.value)) ? undefined : parseFloat(param.value)) : param.value
         }
       })
     }
@@ -237,14 +190,9 @@ export const fixNumericTypes = (calcCase: any): any => {
   }
 }
 
-export const requiresConversion = (calcCase: {
-  metadata: {params: any}
-}): any => {
+export const requiresConversion = (calcCase: {metadata: {params: any}}): any => {
   const version = find(calcCase.metadata.params, ['name', 'version']).value
-  if (
-    typeof version !== 'undefined' &&
-    parseInt(version.split('.')[2], 10) >= 45
-  ) {
+  if (typeof version !== 'undefined' && parseInt(version.split('.')[2], 10) >= 45) {
     return false
   }
   return true

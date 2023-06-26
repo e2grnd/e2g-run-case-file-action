@@ -1,14 +1,6 @@
 declare const isEmptyParam: (param: {value: unknown}) => boolean
 
-declare const revProtoPayloadSwitch: (param: {
-  name: string
-  value: unknown
-  valueType?: number | string
-  isArray?: boolean
-  valuesString?: string[]
-  valuesInteger?: string[]
-  valuesDouble?: string[]
-}) => {
+declare const revProtoPayloadSwitch: (param: {name: string; value: unknown; valueType?: number | string; isArray?: boolean; valuesString?: string[]; valuesInteger?: string[]; valuesDouble?: string[]}) => {
   name: string
   value: unknown
   valueType?: number
@@ -104,15 +96,7 @@ export const revProtoPayload: (payload: {
   }
 }
 
-declare const protoPayloadSwitch: (param: {
-  name: string
-  value: unknown
-  valueType?: number | string
-  isArray?: boolean
-  valuesString?: string[]
-  valuesInteger?: string[]
-  valuesDouble?: string[]
-}) => {
+declare const protoPayloadSwitch: (param: {name: string; value: unknown; valueType?: number | string; isArray?: boolean; valuesString?: string[]; valuesInteger?: string[]; valuesDouble?: string[]}) => {
   name: string
   valuesString?: string | string[]
   valuesInteger?: number | number[]

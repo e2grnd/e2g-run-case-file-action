@@ -24,9 +24,13 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
 
   const calcDir: string = core.getInput('calc-dir', {required: true})
   const calcDirName = path.basename(calcDir)
-  core.debug(`calcDirName: ${calcDirName}`)
+  core.info(`calcDirName: ${calcDirName}`)
   const basePath = core.getInput('static-dir')
   const filePath = path.join(basePath, 'examples', calcDirName, ex.fileName)
+  if (!fs.existsSync(filePath)) {
+    core.error(`Example file for calculator ${calcDirName} not found: ${ex.fileName}`)
+    return
+  }
 
   const fileContents = await fs.promises.readFile(filePath, 'utf-8')
   const caseParsed = JSON.parse(fileContents)
@@ -36,7 +40,7 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
   const protoAsJSON = protoPayload(normalized)
   core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
   const uri = `https://${baseUrl}/api/job/create`
-  core.debug(`Submitting to URI: "${uri}"`)
+  core.info(`Submitting to URI: "${uri}"`)
   const response = await fetch(uri, {
     method: 'POST',
     headers: {
@@ -46,18 +50,12 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
     body: JSON.stringify(protoAsJSON)
   })
   const text = await response.text()
-  if (!response.ok)
-    throw new Error(`unexpected response ${response.statusText} ${text}`)
+  if (!response.ok) throw new Error(`unexpected response ${response.statusText} ${text}`)
 }
 
-async function crappyConvertToCommonJSImports(
-  filePath: string
-): Promise<string> {
+async function crappyConvertToCommonJSImports(filePath: string): Promise<string> {
   const fileContents = await fs.promises.readFile(filePath, 'utf-8')
-  const nextFileContents = fileContents.replace(
-    /^export default \{/,
-    'module.exports = {'
-  )
+  const nextFileContents = fileContents.replace(/^export default \{/, 'module.exports = {')
   await fs.promises.writeFile(filePath, nextFileContents, 'utf-8')
   return filePath
 }
@@ -76,7 +74,9 @@ async function run(): Promise<void> {
     core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`)
 
     await Promise.all(
-      [...examples.USCustomary, ...examples.Metric].map(submitExampleItem)
+      [...examples.USCustomary, ...examples.Metric].map(async ex => {
+        return core.group(`Submitting example "${ex.title}" [${ex.fileName}]`, async () => submitExampleItem(ex))
+      })
     )
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
