@@ -2,9 +2,12 @@ name: "e2g-run-case-file-action"
 description: "Runs a case file"
 author: "The Equity Engineering Group"
 inputs:
-  file:
+  calc-dir:
     required: true
-    description: "the example case file"
+    description: "path to a calculator src directory that contains an examples.js"
+  static-dir:
+    required: true
+    description: "path to the static dir where the example files are stored"
   base-url:
     description: "the bare base url for the instance to submit the job to"
     default: "dev.e2g.com"

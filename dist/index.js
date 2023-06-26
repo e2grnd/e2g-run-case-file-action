@@ -287,38 +287,56 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
-const fsAll = __importStar(__nccwpck_require__(7147));
+const fs_1 = __importDefault(__nccwpck_require__(7147));
 const compatibility_1 = __nccwpck_require__(5830);
 const serialize_1 = __nccwpck_require__(6823);
+const path_1 = __importDefault(__nccwpck_require__(1017));
+function submitExampleItem(ex) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const baseUrl = core.getInput('base-url');
+        if (!baseUrl) {
+            throw new Error('baseUrl not provided');
+        }
+        const authSecret = core.getInput('auth-secret');
+        const calcDir = core.getInput('calc-dir', { required: true });
+        const calcDirName = path_1.default.dirname(calcDir);
+        core.debug(`calcDirName: ${calcDirName}`);
+        const basePath = core.getInput('static-dir');
+        const filePath = path_1.default.join(basePath, calcDirName, ex.fileName);
+        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
+        const caseParsed = JSON.parse(fileContents);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const normalized = (0, compatibility_1.normalizePayload)(caseParsed);
+        core.debug(`Normalized payload: ${JSON.stringify(normalized)}`);
+        const protoAsJSON = (0, serialize_1.protoPayload)(normalized);
+        core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`);
+        const uri = `https://${baseUrl}/api/job/create`;
+        core.debug(`Submitting to URI: "${uri}"`);
+        const response = yield (0, node_fetch_1.default)(uri, {
+            method: 'POST',
+            headers: {
+                'x-internal-auth-secret': authSecret,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(protoAsJSON)
+        });
+        const text = yield response.text();
+        if (!response.ok)
+            throw new Error(`unexpected response ${response.statusText} ${text}`);
+    });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const filePath = core.getInput('file', { required: true });
-            const baseUrl = core.getInput('base-url');
-            if (!baseUrl) {
-                throw new Error('baseUrl not provided');
+            const calcDir = core.getInput('calc-dir', { required: true });
+            const examplesPath = path_1.default.resolve(calcDir, 'examples.js');
+            const exists = fs_1.default.existsSync(examplesPath);
+            if (!exists) {
+                throw new Error('Examples.js file not found.');
             }
-            const authSecret = core.getInput('auth-secret');
-            const fileContents = yield fsAll.promises.readFile(filePath, 'utf-8');
-            const caseParsed = JSON.parse(fileContents);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const normalized = (0, compatibility_1.normalizePayload)(caseParsed);
-            core.debug(`Normalized payload: ${JSON.stringify(normalized)}`);
-            const protoAsJSON = (0, serialize_1.protoPayload)(normalized);
-            core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`);
-            const uri = `https://${baseUrl}/api/job/create`;
-            core.debug(`Submitting to URI: "${uri}"`);
-            const response = yield (0, node_fetch_1.default)(uri, {
-                method: 'POST',
-                headers: {
-                    'x-internal-auth-secret': authSecret,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(protoAsJSON)
-            });
-            const text = yield response.text();
-            if (!response.ok)
-                throw new Error(`unexpected response ${response.statusText} ${text}`);
+            const examples = yield Promise.resolve(`${examplesPath}`).then(s => __importStar(require(s)));
+            core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`);
+            yield Promise.all([...examples.USCustomary, ...examples.Metric].map(submitExampleItem));
         }
         catch (error) {
             if (error instanceof Error)
