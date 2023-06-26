@@ -50,6 +50,18 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
     throw new Error(`unexpected response ${response.statusText} ${text}`)
 }
 
+async function crappyConvertToCommonJSImports(
+  filePath: string
+): Promise<string> {
+  const fileContents = await fs.promises.readFile(filePath, 'utf-8')
+  const nextFileContents = fileContents.replace(
+    /^export default \{/,
+    'module.exports = {'
+  )
+  await fs.promises.writeFile(filePath, nextFileContents, 'utf-8')
+  return filePath
+}
+
 async function run(): Promise<void> {
   try {
     const calcDir: string = core.getInput('calc-dir', {required: true})
@@ -59,6 +71,7 @@ async function run(): Promise<void> {
     if (!exists) {
       throw new Error('Examples.js file not found.')
     }
+    await crappyConvertToCommonJSImports(examplesPath)
     const examples: TExamplesFile = await import(examplesPath)
     core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`)
 

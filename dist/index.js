@@ -326,6 +326,14 @@ function submitExampleItem(ex) {
             throw new Error(`unexpected response ${response.statusText} ${text}`);
     });
 }
+function crappyConvertToCommonJSImports(filePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
+        const nextFileContents = fileContents.replace(/^export default \{/, 'module.exports = {');
+        yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
+        return filePath;
+    });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -336,6 +344,7 @@ function run() {
             if (!exists) {
                 throw new Error('Examples.js file not found.');
             }
+            yield crappyConvertToCommonJSImports(examplesPath);
             const examples = yield Promise.resolve(`${examplesPath}`).then(s => __importStar(require(s)));
             core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`);
             yield Promise.all([...examples.USCustomary, ...examples.Metric].map(submitExampleItem));
