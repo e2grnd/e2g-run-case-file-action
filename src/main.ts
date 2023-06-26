@@ -16,7 +16,8 @@ async function run(): Promise<void> {
     const caseParsed = JSON.parse(fileContents)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normalized = normalizePayload(caseParsed) as any
-    await fetch(`https://${baseUrl}/api/create`, {
+    core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
+    await fetch(`https://${baseUrl}/api/job/create`, {
       method: 'post',
       headers: {'x-internal-auth-secret': authSecret},
       body: normalized

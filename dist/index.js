@@ -302,7 +302,8 @@ function run() {
             const caseParsed = JSON.parse(fileContents);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const normalized = (0, compatibility_1.normalizePayload)(caseParsed);
-            yield (0, node_fetch_1.default)(`https://${baseUrl}/api/create`, {
+            core.debug(`Normalized payload: ${JSON.stringify(normalized)}`);
+            yield (0, node_fetch_1.default)(`https://${baseUrl}/api/job/create`, {
                 method: 'post',
                 headers: { 'x-internal-auth-secret': authSecret },
                 body: normalized
