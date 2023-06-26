@@ -1,16 +1,26 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import fetch from 'node-fetch'
+import * as fsAll from 'fs'
+import {normalizePayload} from './compatibility'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const filePath: string = core.getInput('file', {required: true})
+    const baseUrl = core.getInput('base-url')
+    if (!baseUrl) {
+      throw new Error('baseUrl not provided')
+    }
+    const authSecret = core.getInput('auth-secret')
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
+    const fileContents = await fsAll.promises.readFile(filePath, 'utf-8')
+    const caseParsed = JSON.parse(fileContents)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const normalized = normalizePayload(caseParsed) as any
+    await fetch(`https://${baseUrl}/api/create`, {
+      method: 'post',
+      headers: {'x-internal-auth-secret': authSecret},
+      body: normalized
+    })
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

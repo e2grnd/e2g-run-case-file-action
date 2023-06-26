@@ -1,11 +1,19 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: "e2g-run-case-file-action"
+description: "Runs a case file"
+author: "The Equity Engineering Group"
 inputs:
-  milliseconds: # change this
+  file:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: "the example case file"
+  base-url:
+    description: "the bare base url for the instance to submit the job to"
+    default: "dev.e2g.com"
+  auth-secret:
+    description: "the auth secret"
+    required: true
+  timeout:
+    description: "timeout in seconds"
+    default: "1800"
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"
