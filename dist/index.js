@@ -306,15 +306,16 @@ function run() {
             const uri = `https://${baseUrl}/api/job/create`;
             core.debug(`Submitting to URI: "${uri}"`);
             const response = yield (0, node_fetch_1.default)(uri, {
-                method: 'post',
+                method: 'POST',
                 headers: {
                     'x-internal-auth-secret': authSecret,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(normalized)
             });
+            const text = yield response.text();
             if (!response.ok)
-                throw new Error(`unexpected response ${response.statusText}`);
+                throw new Error(`unexpected response ${response.statusText} ${text}`);
         }
         catch (error) {
             if (error instanceof Error)

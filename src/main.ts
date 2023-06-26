@@ -20,15 +20,16 @@ async function run(): Promise<void> {
     const uri = `https://${baseUrl}/api/job/create`
     core.debug(`Submitting to URI: "${uri}"`)
     const response = await fetch(uri, {
-      method: 'post',
+      method: 'POST',
       headers: {
         'x-internal-auth-secret': authSecret,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(normalized)
     })
+    const text = await response.text()
     if (!response.ok)
-      throw new Error(`unexpected response ${response.statusText}`)
+      throw new Error(`unexpected response ${response.statusText} ${text}`)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
