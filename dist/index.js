@@ -300,7 +300,7 @@ function submitExampleItem(ex) {
         }
         const authSecret = core.getInput('auth-secret');
         const calcDir = core.getInput('calc-dir', { required: true });
-        const calcDirName = path_1.default.dirname(calcDir);
+        const calcDirName = path_1.default.basename(path_1.default.dirname(calcDir));
         core.debug(`calcDirName: ${calcDirName}`);
         const basePath = core.getInput('static-dir');
         const filePath = path_1.default.join(basePath, calcDirName, ex.fileName);
