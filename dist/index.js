@@ -382,8 +382,13 @@ function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
             }
           }
         */
-        if (!evaluateResp(json) && retriesRemaining > 0) {
-            return getStatus(jobId, uri, retriesRemaining - 1, evaluateResp);
+        if (!evaluateResp(json)) {
+            if (retriesRemaining > 0) {
+                return getStatus(jobId, uri, retriesRemaining - 1, evaluateResp);
+            }
+            else {
+                throw new Error(`Timeout exceeded (${core.getInput('timeout')}s)`);
+            }
         }
         return ((_a = json.status) === null || _a === void 0 ? void 0 : _a.state) || JobStatus.UNKNOWN;
     });
