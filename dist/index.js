@@ -266,6 +266,9 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 const compatibility_1 = __nccwpck_require__(5830);
 const serialize_1 = __nccwpck_require__(6823);
 const path_1 = __importDefault(__nccwpck_require__(1017));
+function isExampleGroup(x) {
+    return typeof x.members !== 'undefined' && Array.isArray(x.members);
+}
 function submitExampleItem(ex) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Starting submission for "${ex.title}" for file "${ex.fileName}"`);
@@ -327,7 +330,16 @@ function run() {
             const examples = yield Promise.resolve(`${examplesPath}`).then(s => __importStar(require(s)));
             core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`);
             yield Promise.all([...examples.USCustomary, ...examples.Metric].map((ex) => __awaiter(this, void 0, void 0, function* () {
-                return core.group(`Submitting example "${ex.title}" [${ex.fileName}]`, () => __awaiter(this, void 0, void 0, function* () { return submitExampleItem(ex); }));
+                if (isExampleGroup(ex)) {
+                    core.group(`Example group "${ex.group}"`, () => __awaiter(this, void 0, void 0, function* () {
+                        return Promise.all(ex.members.map((member) => __awaiter(this, void 0, void 0, function* () {
+                            return core.group(`Submitting example "${member.title}" [${member.fileName}]`, () => __awaiter(this, void 0, void 0, function* () { return submitExampleItem(member); }));
+                        })));
+                    }));
+                }
+                else {
+                    return core.group(`Submitting example "${ex.title}" [${ex.fileName}]`, () => __awaiter(this, void 0, void 0, function* () { return submitExampleItem(ex); }));
+                }
             })));
         }
         catch (error) {

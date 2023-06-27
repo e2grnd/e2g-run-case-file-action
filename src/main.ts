@@ -9,9 +9,17 @@ type TExampleItem = {
   title: string
   fileName: string
 }
+type TExampleGroup = {
+  group: string
+  members: TExampleItem[]
+}
 type TExamplesFile = {
-  Metric: TExampleItem[]
-  USCustomary: TExampleItem[]
+  Metric: (TExampleItem | TExampleGroup)[]
+  USCustomary: (TExampleItem | TExampleGroup)[]
+}
+
+function isExampleGroup(x: TExampleItem | TExampleGroup): x is TExampleGroup {
+  return typeof (x as TExampleGroup).members !== 'undefined' && Array.isArray((x as TExampleGroup).members)
 }
 
 async function submitExampleItem(ex: TExampleItem): Promise<void> {
@@ -75,7 +83,17 @@ async function run(): Promise<void> {
 
     await Promise.all(
       [...examples.USCustomary, ...examples.Metric].map(async ex => {
-        return core.group(`Submitting example "${ex.title}" [${ex.fileName}]`, async () => submitExampleItem(ex))
+        if (isExampleGroup(ex)) {
+          core.group(`Example group "${ex.group}"`, async () => {
+            return Promise.all(
+              ex.members.map(async member => {
+                return core.group(`Submitting example "${member.title}" [${member.fileName}]`, async () => submitExampleItem(member))
+              })
+            )
+          })
+        } else {
+          return core.group(`Submitting example "${ex.title}" [${ex.fileName}]`, async () => submitExampleItem(ex))
+        }
       })
     )
   } catch (error) {
