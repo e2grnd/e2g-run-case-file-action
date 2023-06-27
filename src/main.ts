@@ -57,9 +57,8 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
     },
     body: JSON.stringify(protoAsJSON)
   })
-  const text = await response.text()
-  if (!response.ok) throw new Error(`unexpected response ${response.statusText} ${text}`)
   const json = (await response.json()) as {metadata?: {jobId?: string}}
+  if (!response.ok) throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`)
   /*
   {
     "metadata": {
@@ -117,8 +116,7 @@ async function getStatus(jobId: string, uri: string, retriesRemaining: number, e
     }
   })
   const json = (await response.json()) as TJobStatusResponse
-  const text = await response.text()
-  if (!response.ok) throw new Error(`unexpected response ${response.statusText} ${text}`)
+  if (!response.ok) throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`)
   /*
     {
       "jobId": "iiUfmke2lKwESDz3JRvqGg",

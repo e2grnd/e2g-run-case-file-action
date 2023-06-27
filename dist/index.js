@@ -304,10 +304,9 @@ function submitExampleItem(ex) {
             },
             body: JSON.stringify(protoAsJSON)
         });
-        const text = yield response.text();
-        if (!response.ok)
-            throw new Error(`unexpected response ${response.statusText} ${text}`);
         const json = (yield response.json());
+        if (!response.ok)
+            throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`);
         /*
         {
           "metadata": {
@@ -365,9 +364,8 @@ function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
             }
         });
         const json = (yield response.json());
-        const text = yield response.text();
         if (!response.ok)
-            throw new Error(`unexpected response ${response.statusText} ${text}`);
+            throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`);
         /*
           {
             "jobId": "iiUfmke2lKwESDz3JRvqGg",
