@@ -270,6 +270,7 @@ function isExampleGroup(x) {
     return typeof x.members !== 'undefined' && Array.isArray(x.members);
 }
 function submitExampleItem(ex) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Starting submission for "${ex.title}" for file "${ex.fileName}"`);
         const baseUrl = core.getInput('base-url');
@@ -306,6 +307,79 @@ function submitExampleItem(ex) {
         const text = yield response.text();
         if (!response.ok)
             throw new Error(`unexpected response ${response.statusText} ${text}`);
+        const json = (yield response.json());
+        /*
+        {
+          "metadata": {
+              "jobId": "iiUfmke2lKwESDz3JRvqGg",
+              "status": "OK"
+          }
+        }
+        */
+        const jobId = (_a = json.metadata) === null || _a === void 0 ? void 0 : _a.jobId;
+        if (!jobId) {
+            throw new Error('Did not receive job ID from job create');
+        }
+        core.info(`Job ${jobId} created successfully. Beggining status polling.`);
+        const status = yield pollForJobCompletion(jobId);
+        if (status === JobStatus.ERROR) {
+            core.setFailed('Job failed');
+            return;
+        }
+        core.info(`Job finished with status ${status}. 👋`);
+    });
+}
+var JobStatus;
+(function (JobStatus) {
+    JobStatus[JobStatus["PENDING"] = 0] = "PENDING";
+    JobStatus[JobStatus["COMPLETE"] = 1] = "COMPLETE";
+    JobStatus[JobStatus["ERROR"] = 2] = "ERROR";
+    JobStatus[JobStatus["RUNNING"] = 3] = "RUNNING";
+    JobStatus[JobStatus["UNKNOWN"] = 4] = "UNKNOWN";
+})(JobStatus || (JobStatus = {}));
+function pollForJobCompletion(jobId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const baseUrl = core.getInput('base-url');
+        if (!baseUrl) {
+            throw new Error('baseUrl not provided');
+        }
+        const uri = `https://${baseUrl}/api/job/status?job_id=${jobId}`;
+        core.info(`Polling for job status at URI: "${uri}"`);
+        const maxRetries = 20;
+        return yield getStatus(jobId, uri, maxRetries, r => {
+            core.debug(`Status state: ${r.status.state} (type: ${typeof r.status.state})`);
+            if (r.status.state === JobStatus.COMPLETE || r.status.state === JobStatus.ERROR) {
+                return false;
+            }
+            return true;
+        });
+    });
+}
+function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
+    return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`);
+        const authSecret = core.getInput('auth-secret');
+        const response = yield (0, node_fetch_1.default)(uri, {
+            headers: {
+                'x-internal-auth-secret': authSecret
+            }
+        });
+        const json = (yield response.json());
+        const text = yield response.text();
+        if (!response.ok)
+            throw new Error(`unexpected response ${response.statusText} ${text}`);
+        /*
+          {
+            "jobId": "iiUfmke2lKwESDz3JRvqGg",
+            "status": {
+                "state": 1
+            }
+          }
+        */
+        if (evaluateResp(json) && retriesRemaining > 0) {
+            return getStatus(jobId, uri, retriesRemaining--, evaluateResp);
+        }
+        return json.status.state;
     });
 }
 function crappyConvertToCommonJSImports(filePath) {

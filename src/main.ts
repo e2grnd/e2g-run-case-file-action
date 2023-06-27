@@ -59,6 +59,78 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
   })
   const text = await response.text()
   if (!response.ok) throw new Error(`unexpected response ${response.statusText} ${text}`)
+  const json = (await response.json()) as {metadata?: {jobId?: string}}
+  /*
+  {
+    "metadata": {
+        "jobId": "iiUfmke2lKwESDz3JRvqGg",
+        "status": "OK"
+    }
+  }
+  */
+  const jobId = json.metadata?.jobId
+  if (!jobId) {
+    throw new Error('Did not receive job ID from job create')
+  }
+  core.info(`Job ${jobId} created successfully. Beggining status polling.`)
+  const status = await pollForJobCompletion(jobId)
+  if (status === JobStatus.ERROR) {
+    core.setFailed('Job failed')
+    return
+  }
+  core.info(`Job finished with status ${status}. 👋`)
+}
+
+enum JobStatus {
+  PENDING = 0,
+  COMPLETE = 1,
+  ERROR = 2,
+  RUNNING = 3,
+  UNKNOWN = 4
+}
+
+async function pollForJobCompletion(jobId: string): Promise<JobStatus> {
+  const baseUrl = core.getInput('base-url')
+  if (!baseUrl) {
+    throw new Error('baseUrl not provided')
+  }
+  const uri = `https://${baseUrl}/api/job/status?job_id=${jobId}`
+  core.info(`Polling for job status at URI: "${uri}"`)
+  const maxRetries = 20
+  return await getStatus(jobId, uri, maxRetries, r => {
+    core.debug(`Status state: ${r.status.state} (type: ${typeof r.status.state})`)
+    if (r.status.state === JobStatus.COMPLETE || r.status.state === JobStatus.ERROR) {
+      return false
+    }
+    return true
+  })
+}
+
+type TJobStatusResponse = {status: {state: number}}
+
+async function getStatus(jobId: string, uri: string, retriesRemaining: number, evaluateResp: (jobStatusResponse: TJobStatusResponse) => boolean): Promise<JobStatus> {
+  core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`)
+  const authSecret = core.getInput('auth-secret')
+  const response = await fetch(uri, {
+    headers: {
+      'x-internal-auth-secret': authSecret
+    }
+  })
+  const json = (await response.json()) as TJobStatusResponse
+  const text = await response.text()
+  if (!response.ok) throw new Error(`unexpected response ${response.statusText} ${text}`)
+  /*
+    {
+      "jobId": "iiUfmke2lKwESDz3JRvqGg",
+      "status": {
+          "state": 1
+      }
+    }
+  */
+  if (evaluateResp(json) && retriesRemaining > 0) {
+    return getStatus(jobId, uri, retriesRemaining--, evaluateResp)
+  }
+  return json.status.state
 }
 
 async function crappyConvertToCommonJSImports(filePath: string): Promise<string> {

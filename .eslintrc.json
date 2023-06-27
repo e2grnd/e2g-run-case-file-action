@@ -65,7 +65,9 @@
       "never"
     ],
     "@typescript-eslint/type-annotation-spacing": "error",
-    "@typescript-eslint/unbound-method": "error"
+    "@typescript-eslint/unbound-method": "error",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error"
   },
   "env": {
     "node": true,
