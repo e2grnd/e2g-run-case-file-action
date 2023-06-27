@@ -291,9 +291,9 @@ function submitExampleItem(ex) {
         const caseParsed = JSON.parse(fileContents);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const normalized = (0, compatibility_1.normalizePayload)(caseParsed);
-        core.debug(`Normalized payload: ${JSON.stringify(normalized)}`);
+        // core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
         const protoAsJSON = (0, serialize_1.protoPayload)(normalized);
-        core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`);
+        // core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
         const uri = `https://${baseUrl}/api/job/create`;
         core.info(`Submitting to URI: "${uri}"`);
         const response = yield (0, node_fetch_1.default)(uri, {

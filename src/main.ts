@@ -44,9 +44,9 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
   const caseParsed = JSON.parse(fileContents)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const normalized = normalizePayload(caseParsed) as any
-  core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
+  // core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
   const protoAsJSON = protoPayload(normalized)
-  core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
+  // core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
   const uri = `https://${baseUrl}/api/job/create`
   core.info(`Submitting to URI: "${uri}"`)
   const response = await fetch(uri, {
