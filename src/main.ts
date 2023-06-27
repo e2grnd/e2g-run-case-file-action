@@ -108,6 +108,7 @@ async function pollForJobCompletion(jobId: string): Promise<JobStatus> {
 type TJobStatusResponse = {status: {state: number}}
 
 async function getStatus(jobId: string, uri: string, retriesRemaining: number, evaluateResp: (jobStatusResponse: TJobStatusResponse) => boolean): Promise<JobStatus> {
+  await sleep(1000)
   core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`)
   const authSecret = core.getInput('auth-secret')
   const response = await fetch(uri, {
@@ -126,8 +127,7 @@ async function getStatus(jobId: string, uri: string, retriesRemaining: number, e
     }
   */
   if (evaluateResp(json) && retriesRemaining > 0) {
-    await sleep(1000)
-    return getStatus(jobId, uri, retriesRemaining--, evaluateResp)
+    return getStatus(jobId, uri, retriesRemaining - 1, evaluateResp)
   }
   return json.status.state
 }

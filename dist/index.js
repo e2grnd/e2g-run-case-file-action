@@ -356,6 +356,7 @@ function pollForJobCompletion(jobId) {
 }
 function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
     return __awaiter(this, void 0, void 0, function* () {
+        yield sleep(1000);
         core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`);
         const authSecret = core.getInput('auth-secret');
         const response = yield (0, node_fetch_1.default)(uri, {
@@ -375,8 +376,7 @@ function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
           }
         */
         if (evaluateResp(json) && retriesRemaining > 0) {
-            yield sleep(1000);
-            return getStatus(jobId, uri, retriesRemaining--, evaluateResp);
+            return getStatus(jobId, uri, retriesRemaining - 1, evaluateResp);
         }
         return json.status.state;
     });
