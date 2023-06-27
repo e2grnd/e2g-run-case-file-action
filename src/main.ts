@@ -104,15 +104,15 @@ async function pollForJobCompletion(jobId: string): Promise<JobStatus> {
 
   const maxRetries = timeoutSeconds / (POLLING_INTERVAL / 1000)
   return await getStatus(jobId, uri, maxRetries, r => {
-    core.debug(`Status state: ${r.status.state} (type: ${typeof r.status.state})`)
-    if (r.status.state === JobStatus.COMPLETE || r.status.state === JobStatus.ERROR) {
-      return false
+    core.debug(`Status state: ${r.status?.state} (type: ${typeof r.status?.state})`)
+    if (r.status?.state === JobStatus.COMPLETE || r.status?.state === JobStatus.ERROR) {
+      return true
     }
-    return true
+    return false
   })
 }
 
-type TJobStatusResponse = {status: {state: number}}
+type TJobStatusResponse = {status?: {state: number}}
 
 async function getStatus(jobId: string, uri: string, retriesRemaining: number, evaluateResp: (jobStatusResponse: TJobStatusResponse) => boolean): Promise<JobStatus> {
   await sleep(POLLING_INTERVAL)
@@ -133,10 +133,10 @@ async function getStatus(jobId: string, uri: string, retriesRemaining: number, e
       }
     }
   */
-  if (evaluateResp(json) && retriesRemaining > 0) {
+  if (!evaluateResp(json) && retriesRemaining > 0) {
     return getStatus(jobId, uri, retriesRemaining - 1, evaluateResp)
   }
-  return json.status.state
+  return json.status?.state || JobStatus.UNKNOWN
 }
 
 async function crappyConvertToCommonJSImports(filePath: string): Promise<string> {

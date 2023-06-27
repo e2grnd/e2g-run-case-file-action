@@ -351,15 +351,17 @@ function pollForJobCompletion(jobId) {
         }
         const maxRetries = timeoutSeconds / (POLLING_INTERVAL / 1000);
         return yield getStatus(jobId, uri, maxRetries, r => {
-            core.debug(`Status state: ${r.status.state} (type: ${typeof r.status.state})`);
-            if (r.status.state === JobStatus.COMPLETE || r.status.state === JobStatus.ERROR) {
-                return false;
+            var _a, _b, _c, _d;
+            core.debug(`Status state: ${(_a = r.status) === null || _a === void 0 ? void 0 : _a.state} (type: ${typeof ((_b = r.status) === null || _b === void 0 ? void 0 : _b.state)})`);
+            if (((_c = r.status) === null || _c === void 0 ? void 0 : _c.state) === JobStatus.COMPLETE || ((_d = r.status) === null || _d === void 0 ? void 0 : _d.state) === JobStatus.ERROR) {
+                return true;
             }
-            return true;
+            return false;
         });
     });
 }
 function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         yield sleep(POLLING_INTERVAL);
         core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`);
@@ -380,10 +382,10 @@ function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
             }
           }
         */
-        if (evaluateResp(json) && retriesRemaining > 0) {
+        if (!evaluateResp(json) && retriesRemaining > 0) {
             return getStatus(jobId, uri, retriesRemaining - 1, evaluateResp);
         }
-        return json.status.state;
+        return ((_a = json.status) === null || _a === void 0 ? void 0 : _a.state) || JobStatus.UNKNOWN;
     });
 }
 function crappyConvertToCommonJSImports(filePath) {
