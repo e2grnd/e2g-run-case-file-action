@@ -375,6 +375,7 @@ function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
           }
         */
         if (evaluateResp(json) && retriesRemaining > 0) {
+            yield sleep(1000);
             return getStatus(jobId, uri, retriesRemaining--, evaluateResp);
         }
         return json.status.state;
@@ -421,6 +422,15 @@ function run() {
     });
 }
 run();
+function sleep(ms) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, ms);
+        });
+    });
+}
 
 
 /***/ }),

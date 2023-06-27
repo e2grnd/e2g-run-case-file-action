@@ -126,6 +126,7 @@ async function getStatus(jobId: string, uri: string, retriesRemaining: number, e
     }
   */
   if (evaluateResp(json) && retriesRemaining > 0) {
+    await sleep(1000)
     return getStatus(jobId, uri, retriesRemaining--, evaluateResp)
   }
   return json.status.state
@@ -172,3 +173,11 @@ async function run(): Promise<void> {
 }
 
 run()
+
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, ms)
+  })
+}
