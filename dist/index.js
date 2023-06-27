@@ -266,6 +266,7 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 const compatibility_1 = __nccwpck_require__(5830);
 const serialize_1 = __nccwpck_require__(6823);
 const path_1 = __importDefault(__nccwpck_require__(1017));
+const POLLING_INTERVAL = 2000;
 function isExampleGroup(x) {
     return typeof x.members !== 'undefined' && Array.isArray(x.members);
 }
@@ -325,7 +326,7 @@ function submitExampleItem(ex) {
             core.setFailed('Job failed');
             return;
         }
-        core.info(`Job finished with status ${status}. 👋`);
+        core.info(`Job ${jobId} (${calcDirName}) finished with status ${status}. 👋`);
     });
 }
 var JobStatus;
@@ -344,7 +345,11 @@ function pollForJobCompletion(jobId) {
         }
         const uri = `https://${baseUrl}/api/job/status?job_id=${jobId}`;
         core.info(`Polling for job status at URI: "${uri}"`);
-        const maxRetries = 20;
+        const timeoutSeconds = parseInt(core.getInput('timeout'), 10);
+        if (isNaN(timeoutSeconds)) {
+            throw new Error('Invalid timeout provided');
+        }
+        const maxRetries = timeoutSeconds / (POLLING_INTERVAL / 1000);
         return yield getStatus(jobId, uri, maxRetries, r => {
             core.debug(`Status state: ${r.status.state} (type: ${typeof r.status.state})`);
             if (r.status.state === JobStatus.COMPLETE || r.status.state === JobStatus.ERROR) {
@@ -356,7 +361,7 @@ function pollForJobCompletion(jobId) {
 }
 function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield sleep(1000);
+        yield sleep(POLLING_INTERVAL);
         core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`);
         const authSecret = core.getInput('auth-secret');
         const response = yield (0, node_fetch_1.default)(uri, {

@@ -18,6 +18,8 @@ type TExamplesFile = {
   USCustomary: (TExampleItem | TExampleGroup)[]
 }
 
+const POLLING_INTERVAL = 2000
+
 function isExampleGroup(x: TExampleItem | TExampleGroup): x is TExampleGroup {
   return typeof (x as TExampleGroup).members !== 'undefined' && Array.isArray((x as TExampleGroup).members)
 }
@@ -77,7 +79,7 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
     core.setFailed('Job failed')
     return
   }
-  core.info(`Job finished with status ${status}. 👋`)
+  core.info(`Job ${jobId} (${calcDirName}) finished with status ${status}. 👋`)
 }
 
 enum JobStatus {
@@ -95,7 +97,12 @@ async function pollForJobCompletion(jobId: string): Promise<JobStatus> {
   }
   const uri = `https://${baseUrl}/api/job/status?job_id=${jobId}`
   core.info(`Polling for job status at URI: "${uri}"`)
-  const maxRetries = 20
+  const timeoutSeconds = parseInt(core.getInput('timeout'), 10)
+  if (isNaN(timeoutSeconds)) {
+    throw new Error('Invalid timeout provided')
+  }
+
+  const maxRetries = timeoutSeconds / (POLLING_INTERVAL / 1000)
   return await getStatus(jobId, uri, maxRetries, r => {
     core.debug(`Status state: ${r.status.state} (type: ${typeof r.status.state})`)
     if (r.status.state === JobStatus.COMPLETE || r.status.state === JobStatus.ERROR) {
@@ -108,7 +115,7 @@ async function pollForJobCompletion(jobId: string): Promise<JobStatus> {
 type TJobStatusResponse = {status: {state: number}}
 
 async function getStatus(jobId: string, uri: string, retriesRemaining: number, evaluateResp: (jobStatusResponse: TJobStatusResponse) => boolean): Promise<JobStatus> {
-  await sleep(1000)
+  await sleep(POLLING_INTERVAL)
   core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`)
   const authSecret = core.getInput('auth-secret')
   const response = await fetch(uri, {
