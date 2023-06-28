@@ -76,10 +76,10 @@ async function submitExampleItem(ex: TExampleItem): Promise<void> {
   core.info(`Job ${jobId} created successfully. Beggining status polling.`)
   const status = await pollForJobCompletion(jobId)
   if (status === JobStatus.ERROR) {
-    core.setFailed('Job failed')
+    core.setFailed(`Job ${jobId} "${ex.fileName}" failed`)
     return
   }
-  core.info(`Job ${jobId} (${calcDirName}) finished with status ${status}. 👋`)
+  core.info(`Job ${jobId} (${calcDirName}) - "${ex.fileName}" finished with status ${status}. 👋`)
 }
 
 enum JobStatus {
