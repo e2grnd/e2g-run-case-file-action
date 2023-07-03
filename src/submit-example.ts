@@ -52,7 +52,7 @@ export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSy
   const normalized = normalizePayload(caseFileConverted) as any
 
   try {
-    normalized.metadata.JobName = ex.title
+    normalized.metadata.jobName = ex.title
   } catch (e) {
     core.warning(e as Error)
   }

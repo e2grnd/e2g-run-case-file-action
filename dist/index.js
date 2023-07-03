@@ -815,7 +815,7 @@ function submitExample(ex, exampleUnitSystem, calculatorUnitSystem, exampleUnitM
         */
         const normalized = (0, compatibility_1.normalizePayload)(caseFileConverted);
         try {
-            normalized.metadata.JobName = ex.title;
+            normalized.metadata.jobName = ex.title;
         }
         catch (e) {
             core.warning(e);
