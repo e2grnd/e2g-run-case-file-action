@@ -21,7 +21,7 @@ type TJobStatusResponse = {status?: {state: number}}
 type TParamUnitMap = Record<string, string>
 
 export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSystem, calculatorUnitSystem: TUnitSystem, exampleUnitMap: TParamUnitMap, calculatorUnitMap: TParamUnitMap): Promise<void> {
-  core.notice(`Starting submission for "${ex.title}" for file "${ex.fileName}" (${exampleUnitSystem})`)
+  core.info(`Starting submission for "${ex.title}" for file "${ex.fileName}" (${exampleUnitSystem})`)
   const baseUrl = core.getInput('base-url')
   if (!baseUrl) {
     throw new Error('baseUrl not provided')
@@ -42,7 +42,7 @@ export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSy
   const caseParsed = JSON.parse(fileContents)
   let caseFileConverted = caseParsed
   if (exampleUnitSystem !== calculatorUnitSystem) {
-    core.notice(`Example and calculator unit system do not match. Conversion is required.`)
+    core.debug(`Example and calculator unit system do not match. Conversion is required.`)
     caseFileConverted = convertToCalculatorUnits(caseFileConverted, exampleUnitMap, calculatorUnitMap)
   }
   const normalized = normalizePayload(caseFileConverted) as any

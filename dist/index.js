@@ -784,7 +784,7 @@ var JobStatus;
 function submitExample(ex, exampleUnitSystem, calculatorUnitSystem, exampleUnitMap, calculatorUnitMap) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        core.notice(`Starting submission for "${ex.title}" for file "${ex.fileName}" (${exampleUnitSystem})`);
+        core.info(`Starting submission for "${ex.title}" for file "${ex.fileName}" (${exampleUnitSystem})`);
         const baseUrl = core.getInput('base-url');
         if (!baseUrl) {
             throw new Error('baseUrl not provided');
@@ -803,7 +803,7 @@ function submitExample(ex, exampleUnitSystem, calculatorUnitSystem, exampleUnitM
         const caseParsed = JSON.parse(fileContents);
         let caseFileConverted = caseParsed;
         if (exampleUnitSystem !== calculatorUnitSystem) {
-            core.notice(`Example and calculator unit system do not match. Conversion is required.`);
+            core.debug(`Example and calculator unit system do not match. Conversion is required.`);
             caseFileConverted = (0, unit_conversion_1.convertToCalculatorUnits)(caseFileConverted, exampleUnitMap, calculatorUnitMap);
         }
         const normalized = (0, compatibility_1.normalizePayload)(caseFileConverted);
