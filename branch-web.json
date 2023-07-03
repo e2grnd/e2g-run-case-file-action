@@ -1,0 +1,304 @@
+{
+    "metadata": {
+        "params": [
+            {
+                "name": "version",
+                "valuesString": [
+                    "@e2grnd/calculator-ui@5.0.0"
+                ],
+                "valueType": 0
+            },
+            {
+                "name": "unitSystem",
+                "valuesString": [
+                    "Metric"
+                ],
+                "valueType": 0
+            },
+            {
+                "name": "timeStamp",
+                "valuesString": [
+                    ""
+                ],
+                "valueType": 0
+            },
+            {
+                "name": "userAgent",
+                "valuesString": [
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+                ],
+                "valueType": 0
+            },
+            {
+                "name": "schemaVersion",
+                "valuesString": [
+                    "1"
+                ],
+                "valueType": 0
+            },
+            {
+                "name": "reportHeader",
+                "valuesString": [
+                    ""
+                ],
+                "valueType": 0
+            },
+            {
+                "name": "PrimaryCalcType",
+                "valuesString": [
+                    "sage"
+                ],
+                "valueType": 0
+            }
+        ],
+        "calculatorName": "branch",
+        "userId": "alampros@e2g.com"
+    },
+    "data": {
+        "tables": [],
+        "params": [],
+        "keywordGroups": [
+            {
+                "name": "APIPE",
+                "tables": [],
+                "params": [
+                    {
+                        "name": "VALIDKEYWORDS",
+                        "valuesString": [
+                            "MAWP",
+                            "MAWPR",
+                            "STRF",
+                            "MDMT",
+                            "MDMTP",
+                            "TMINSG",
+                            "TRET",
+                            "TA1",
+                            "TA2",
+                            "TA41",
+                            "TA42",
+                            "TA5",
+                            "TAEXIST",
+                            "TAREQ",
+                            "TADD",
+                            "PA1",
+                            "PA2",
+                            "PA41",
+                            "PA42",
+                            "PA5",
+                            "PAEXIST",
+                            "PAREQ",
+                            "PADD",
+                            "A1",
+                            "A2",
+                            "A41",
+                            "A42",
+                            "A5",
+                            "AEXIST",
+                            "AREQ",
+                            "ADD"
+                        ],
+                        "valueType": 0,
+                        "isArray": true
+                    },
+                    {
+                        "name": "SPLITTABLES",
+                        "valuesString": [
+                            "MAWP"
+                        ],
+                        "valueType": 0,
+                        "isArray": true
+                    },
+                    {
+                        "name": "BRANCH",
+                        "valuesString": [
+                            "YES"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "STYPE",
+                        "valuesString": [
+                            "CY"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "RTYPE",
+                        "valuesString": [
+                            "INTEGRAL"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "P",
+                        "valuesDouble": [
+                            217.55660637974887
+                        ],
+                        "valueType": 2
+                    },
+                    {
+                        "name": "CODE",
+                        "valuesString": [
+                            "B31.3"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "ANALYSIS",
+                        "valuesString": [
+                            "INT"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "TEMP",
+                        "valuesDouble": [
+                            320.00000000000017
+                        ],
+                        "valueType": 2
+                    },
+                    {
+                        "name": "PIPE_SIZE_METHOD",
+                        "valuesString": [
+                            "0"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "CA",
+                        "valuesDouble": [
+                            0.03937007874015748
+                        ],
+                        "valueType": 2
+                    },
+                    {
+                        "name": "NPS",
+                        "valuesString": [
+                            "NPS_10"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "THK",
+                        "valuesString": [
+                            "STD"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "BRANCH_SIZE_METHOD",
+                        "valuesString": [
+                            "0"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "BCA",
+                        "valuesDouble": [
+                            0.01968503937007874
+                        ],
+                        "valueType": 2
+                    },
+                    {
+                        "name": "BNPS",
+                        "valuesString": [
+                            "NPS_4"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "BTHK",
+                        "valuesString": [
+                            "STD"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "BETAN",
+                        "valuesDouble": [
+                            90
+                        ],
+                        "valueType": 2
+                    },
+                    {
+                        "name": "SPEC",
+                        "valuesString": [
+                            "A106",
+                            "A",
+                            "1999",
+                            "---",
+                            "---",
+                            "---",
+                            "Default"
+                        ],
+                        "valueType": 0,
+                        "isArray": true
+                    },
+                    {
+                        "name": "UTOL",
+                        "valuesString": [
+                            "YES"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "EC",
+                        "valuesDouble": [
+                            1
+                        ],
+                        "valueType": 2
+                    },
+                    {
+                        "name": "EJ",
+                        "valuesDouble": [
+                            1
+                        ],
+                        "valueType": 2
+                    },
+                    {
+                        "name": "BSPEC",
+                        "valuesString": [
+                            "A106",
+                            "A",
+                            "1999",
+                            "---",
+                            "---",
+                            "---",
+                            "Default"
+                        ],
+                        "valueType": 0,
+                        "isArray": true
+                    },
+                    {
+                        "name": "BUTOL",
+                        "valuesString": [
+                            "YES"
+                        ],
+                        "valueType": 0
+                    },
+                    {
+                        "name": "BEC",
+                        "valuesDouble": [
+                            1
+                        ],
+                        "valueType": 2
+                    },
+                    {
+                        "name": "BEJ",
+                        "valuesDouble": [
+                            1
+                        ],
+                        "valueType": 2
+                    },
+                    {
+                        "name": "CALC",
+                        "valuesString": [
+                            "Z"
+                        ],
+                        "valueType": 0
+                    }
+                ]
+            }
+        ]
+    }
+}
