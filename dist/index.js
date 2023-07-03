@@ -496,10 +496,12 @@ function run() {
             const params = yield (0, load_calc_params_1.loadCalcParams)();
             // core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`)
             const calculatorUnitsMap = getParamUnitsMap(params, calculatorUnitSystem);
+            core.debug(`calculatorUnitsMap: ${JSON.stringify(calculatorUnitsMap, undefined, '  ')}`);
             yield Promise.all(Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
+                core.debug(`examplesByUnitSystem: ${JSON.stringify(examplesByUnitSystem)}`);
                 const unitSystem = _unitSystem;
                 const exampleUnitsMap = getParamUnitsMap(params, calculatorUnitSystem);
-                core.debug(`examplesByUnitSystem: ${JSON.stringify(examplesByUnitSystem)}`);
+                core.debug(`exampleUnitsMap: ${JSON.stringify(exampleUnitsMap, undefined, '  ')}`);
                 return examplesByUnitSystem.map((ex) => __awaiter(this, void 0, void 0, function* () {
                     if (isExampleGroup(ex)) {
                         core.group(`Example group "${ex.group}" (${unitSystem})`, () => __awaiter(this, void 0, void 0, function* () {

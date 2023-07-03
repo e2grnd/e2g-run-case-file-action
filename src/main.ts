@@ -41,12 +41,14 @@ async function run(): Promise<void> {
     const params = await loadCalcParams()
     // core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`)
     const calculatorUnitsMap = getParamUnitsMap(params, calculatorUnitSystem)
+    core.debug(`calculatorUnitsMap: ${JSON.stringify(calculatorUnitsMap, undefined, '  ')}`)
 
     await Promise.all(
       Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
+        core.debug(`examplesByUnitSystem: ${JSON.stringify(examplesByUnitSystem)}`)
         const unitSystem = _unitSystem as TUnitSystem
         const exampleUnitsMap = getParamUnitsMap(params, calculatorUnitSystem)
-        core.debug(`examplesByUnitSystem: ${JSON.stringify(examplesByUnitSystem)}`)
+        core.debug(`exampleUnitsMap: ${JSON.stringify(exampleUnitsMap, undefined, '  ')}`)
         return examplesByUnitSystem.map(async ex => {
           if (isExampleGroup(ex)) {
             core.group(`Example group "${ex.group}" (${unitSystem})`, async () => {
