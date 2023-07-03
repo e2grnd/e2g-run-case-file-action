@@ -492,13 +492,14 @@ function run() {
             core.debug(`Calculator Descriptor: \n${JSON.stringify(descriptor, undefined, '  ')}`);
             const calculatorUnitSystem = descriptor.unitSystem;
             const examples = yield (0, load_calc_examples_1.loadCalcExamples)();
-            core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`);
+            // core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`)
             const params = yield (0, load_calc_params_1.loadCalcParams)();
-            core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`);
+            // core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`)
             const calculatorUnitsMap = getParamUnitsMap(params, calculatorUnitSystem);
             yield Promise.all(Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
                 const unitSystem = _unitSystem;
                 const exampleUnitsMap = getParamUnitsMap(params, calculatorUnitSystem);
+                core.debug(`examplesByUnitSystem: ${JSON.stringify(examplesByUnitSystem)}`);
                 return examplesByUnitSystem.map((ex) => __awaiter(this, void 0, void 0, function* () {
                     if (isExampleGroup(ex)) {
                         core.group(`Example group "${ex.group}" (${unitSystem})`, () => __awaiter(this, void 0, void 0, function* () {
