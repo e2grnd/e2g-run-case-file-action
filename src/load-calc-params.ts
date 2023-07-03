@@ -33,7 +33,7 @@ export async function loadCalcParams(): Promise<TParams> {
   }
   await crappyConvertToCommonJSImports(paramsPath)
   // for some reason I can't just export an array. They come out as individual export members
-  const paramsRaw: Record<string, Param> = await import(paramsPath)
-  const params: TParams = Object.values(paramsRaw) as TParams
-  return params
+  const paramsRaw = await import(paramsPath)
+  // const params: TParams = Object.values(paramsRaw) as TParams
+  return paramsRaw.default as TParams
 }

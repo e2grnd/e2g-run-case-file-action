@@ -18,6 +18,6 @@ export async function loadCalcExamples(): Promise<TExamplesFile> {
     throw new Error('Examples.js file not found.')
   }
   await crappyConvertToCommonJSImports(examplesPath)
-  const examples: TExamplesFile = await import(examplesPath)
-  return examples
+  const examples = await import(examplesPath)
+  return examples.default as TExamplesFile
 }

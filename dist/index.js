@@ -347,7 +347,7 @@ function loadCalcExamples() {
         }
         yield crappyConvertToCommonJSImports(examplesPath);
         const examples = yield Promise.resolve(`${examplesPath}`).then(s => __importStar(require(s)));
-        return examples;
+        return examples.default;
     });
 }
 exports.loadCalcExamples = loadCalcExamples;
@@ -420,8 +420,8 @@ function loadCalcParams() {
         yield crappyConvertToCommonJSImports(paramsPath);
         // for some reason I can't just export an array. They come out as individual export members
         const paramsRaw = yield Promise.resolve(`${paramsPath}`).then(s => __importStar(require(s)));
-        const params = Object.values(paramsRaw);
-        return params;
+        // const params: TParams = Object.values(paramsRaw) as TParams
+        return paramsRaw.default;
     });
 }
 exports.loadCalcParams = loadCalcParams;
