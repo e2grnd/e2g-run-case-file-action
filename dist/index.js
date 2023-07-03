@@ -814,6 +814,12 @@ function submitExample(ex, exampleUnitSystem, calculatorUnitSystem, exampleUnitM
         }
         */
         const normalized = (0, compatibility_1.normalizePayload)(caseFileConverted);
+        try {
+            normalized.metadata.JobName = ex.title;
+        }
+        catch (e) {
+            core.warning(e);
+        }
         // core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
         const protoAsJSON = (0, serialize_1.protoPayload)(normalized);
         // core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)

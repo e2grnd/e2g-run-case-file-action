@@ -51,6 +51,12 @@ export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSy
   */
   const normalized = normalizePayload(caseFileConverted) as any
 
+  try {
+    normalized.metadata.JobName = ex.title
+  } catch (e) {
+    core.warning(e as Error)
+  }
+
   // core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
   const protoAsJSON = protoPayload(normalized)
   // core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
