@@ -52,6 +52,7 @@ export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSy
   // core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
   const uri = `https://${baseUrl}/api/job/create`
   core.info(`Submitting to URI: "${uri}"`)
+  core.debug(`Sending request to ${uri}:\n ${JSON.stringify(protoAsJSON, undefined, '  ')}`)
   const response = await fetch(uri, {
     method: 'POST',
     headers: {

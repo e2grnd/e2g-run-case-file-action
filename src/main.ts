@@ -51,7 +51,7 @@ async function run(): Promise<void> {
         core.debug(`exampleUnitsMap: ${JSON.stringify(exampleUnitsMap, undefined, '  ')}`)
         return examplesByUnitSystem.map(async ex => {
           if (isExampleGroup(ex)) {
-            core.group(`Example group "${ex.group}" (${unitSystem})`, async () => {
+            return core.group(`Example group "${ex.group}" (${unitSystem})`, async () => {
               return Promise.all(
                 ex.members.map(async member => {
                   return core.group(`Submitting ${unitSystem} example "${member.title}" [${member.fileName}]`, async () => submitExample(member, unitSystem, calculatorUnitSystem, exampleUnitsMap, calculatorUnitsMap))

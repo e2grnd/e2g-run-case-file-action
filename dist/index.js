@@ -504,7 +504,7 @@ function run() {
                 core.debug(`exampleUnitsMap: ${JSON.stringify(exampleUnitsMap, undefined, '  ')}`);
                 return examplesByUnitSystem.map((ex) => __awaiter(this, void 0, void 0, function* () {
                     if (isExampleGroup(ex)) {
-                        core.group(`Example group "${ex.group}" (${unitSystem})`, () => __awaiter(this, void 0, void 0, function* () {
+                        return core.group(`Example group "${ex.group}" (${unitSystem})`, () => __awaiter(this, void 0, void 0, function* () {
                             return Promise.all(ex.members.map((member) => __awaiter(this, void 0, void 0, function* () {
                                 return core.group(`Submitting ${unitSystem} example "${member.title}" [${member.fileName}]`, () => __awaiter(this, void 0, void 0, function* () { return (0, submit_example_1.submitExample)(member, unitSystem, calculatorUnitSystem, exampleUnitsMap, calculatorUnitsMap); }));
                             })));
@@ -815,6 +815,7 @@ function submitExample(ex, exampleUnitSystem, calculatorUnitSystem, exampleUnitM
         // core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
         const uri = `https://${baseUrl}/api/job/create`;
         core.info(`Submitting to URI: "${uri}"`);
+        core.debug(`Sending request to ${uri}:\n ${JSON.stringify(protoAsJSON, undefined, '  ')}`);
         const response = yield (0, node_fetch_1.default)(uri, {
             method: 'POST',
             headers: {
