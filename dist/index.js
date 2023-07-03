@@ -492,6 +492,7 @@ function run() {
             const examples = yield (0, load_calc_examples_1.loadCalcExamples)();
             core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`);
             const params = yield (0, load_calc_params_1.loadCalcParams)();
+            core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`);
             const calculatorUnitsMap = getParamUnitsMap(params, calculatorUnitSystem);
             yield Promise.all(Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
                 const unitSystem = _unitSystem;

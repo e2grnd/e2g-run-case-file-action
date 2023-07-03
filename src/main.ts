@@ -39,6 +39,7 @@ async function run(): Promise<void> {
     const examples = await loadCalcExamples()
     core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`)
     const params = await loadCalcParams()
+    core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`)
     const calculatorUnitsMap = getParamUnitsMap(params, calculatorUnitSystem)
 
     await Promise.all(
