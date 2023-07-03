@@ -219,7 +219,7 @@ exports.convertCase = convertCase;
 
 /***/ }),
 
-/***/ 3109:
+/***/ 1317:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -260,139 +260,74 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadCalcDescriptor = void 0;
 const core = __importStar(__nccwpck_require__(2186));
-const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
-const compatibility_1 = __nccwpck_require__(5830);
-const serialize_1 = __nccwpck_require__(6823);
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const POLLING_INTERVAL = 2000;
-function isExampleGroup(x) {
-    return typeof x.members !== 'undefined' && Array.isArray(x.members);
-}
-function submitExampleItem(ex) {
-    var _a;
+function loadCalcDescriptor() {
     return __awaiter(this, void 0, void 0, function* () {
-        core.debug(`Starting submission for "${ex.title}" for file "${ex.fileName}"`);
-        const baseUrl = core.getInput('base-url');
-        if (!baseUrl) {
-            throw new Error('baseUrl not provided');
-        }
-        const authSecret = core.getInput('auth-secret');
         const calcDir = core.getInput('calc-dir', { required: true });
-        const calcDirName = path_1.default.basename(calcDir);
-        core.info(`calcDirName: ${calcDirName}`);
-        const basePath = core.getInput('static-dir');
-        const filePath = path_1.default.join(basePath, 'examples', calcDirName, ex.fileName);
-        if (!fs_1.default.existsSync(filePath)) {
-            core.error(`Example file for calculator ${calcDirName} not found: ${ex.fileName}`);
-            return;
+        const descriptorPath = path_1.default.resolve(calcDir, 'descriptor.json');
+        core.debug(`descriptor file path: ${descriptorPath}`);
+        const exists = fs_1.default.existsSync(descriptorPath);
+        if (!exists) {
+            throw new Error(`Descriptor not found for calculator at ${calcDir}`);
         }
-        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
-        const caseParsed = JSON.parse(fileContents);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const normalized = (0, compatibility_1.normalizePayload)(caseParsed);
-        // core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
-        const protoAsJSON = (0, serialize_1.protoPayload)(normalized);
-        // core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
-        const uri = `https://${baseUrl}/api/job/create`;
-        core.info(`Submitting to URI: "${uri}"`);
-        const response = yield (0, node_fetch_1.default)(uri, {
-            method: 'POST',
-            headers: {
-                'x-internal-auth-secret': authSecret,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(protoAsJSON)
-        });
-        const json = (yield response.json());
-        if (!response.ok)
-            throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`);
-        /*
-        {
-          "metadata": {
-              "jobId": "iiUfmke2lKwESDz3JRvqGg",
-              "status": "OK"
-          }
-        }
-        */
-        const jobId = (_a = json.metadata) === null || _a === void 0 ? void 0 : _a.jobId;
-        if (!jobId) {
-            throw new Error('Did not receive job ID from job create');
-        }
-        core.info(`Job ${jobId} created successfully. Beggining status polling.`);
-        const status = yield pollForJobCompletion(jobId);
-        if (status === JobStatus.ERROR) {
-            core.setFailed(`Job ${jobId} "${ex.fileName}" failed`);
-            return;
-        }
-        core.info(`Job ${jobId} (${calcDirName}) - "${ex.fileName}" finished with status ${status}. 👋`);
+        const descriptorStr = fs_1.default.readFileSync(descriptorPath, 'utf-8');
+        const descriptor = JSON.parse(descriptorStr);
+        return descriptor;
     });
 }
-var JobStatus;
-(function (JobStatus) {
-    JobStatus[JobStatus["PENDING"] = 0] = "PENDING";
-    JobStatus[JobStatus["COMPLETE"] = 1] = "COMPLETE";
-    JobStatus[JobStatus["ERROR"] = 2] = "ERROR";
-    JobStatus[JobStatus["RUNNING"] = 3] = "RUNNING";
-    JobStatus[JobStatus["UNKNOWN"] = 4] = "UNKNOWN";
-})(JobStatus || (JobStatus = {}));
-function pollForJobCompletion(jobId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const baseUrl = core.getInput('base-url');
-        if (!baseUrl) {
-            throw new Error('baseUrl not provided');
-        }
-        const uri = `https://${baseUrl}/api/job/status?job_id=${jobId}`;
-        core.info(`Polling for job status at URI: "${uri}"`);
-        const timeoutSeconds = parseInt(core.getInput('timeout'), 10);
-        if (isNaN(timeoutSeconds)) {
-            throw new Error('Invalid timeout provided');
-        }
-        const maxRetries = timeoutSeconds / (POLLING_INTERVAL / 1000);
-        return yield getStatus(jobId, uri, maxRetries, r => {
-            var _a, _b, _c, _d;
-            core.debug(`Status state: ${(_a = r.status) === null || _a === void 0 ? void 0 : _a.state} (type: ${typeof ((_b = r.status) === null || _b === void 0 ? void 0 : _b.state)})`);
-            if (((_c = r.status) === null || _c === void 0 ? void 0 : _c.state) === JobStatus.COMPLETE || ((_d = r.status) === null || _d === void 0 ? void 0 : _d.state) === JobStatus.ERROR) {
-                return true;
-            }
-            return false;
-        });
+exports.loadCalcDescriptor = loadCalcDescriptor;
+
+
+/***/ }),
+
+/***/ 2741:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-}
-function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
-    var _a;
-    return __awaiter(this, void 0, void 0, function* () {
-        yield sleep(POLLING_INTERVAL);
-        core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`);
-        const authSecret = core.getInput('auth-secret');
-        const response = yield (0, node_fetch_1.default)(uri, {
-            headers: {
-                'x-internal-auth-secret': authSecret
-            }
-        });
-        const json = (yield response.json());
-        if (!response.ok)
-            throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`);
-        /*
-          {
-            "jobId": "iiUfmke2lKwESDz3JRvqGg",
-            "status": {
-                "state": 1
-            }
-          }
-        */
-        if (!evaluateResp(json)) {
-            if (retriesRemaining > 0) {
-                return getStatus(jobId, uri, retriesRemaining - 1, evaluateResp);
-            }
-            else {
-                throw new Error(`Timeout exceeded (${core.getInput('timeout')}s)`);
-            }
-        }
-        return ((_a = json.status) === null || _a === void 0 ? void 0 : _a.state) || JobStatus.UNKNOWN;
-    });
-}
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadCalcExamples = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const fs_1 = __importDefault(__nccwpck_require__(7147));
+const path_1 = __importDefault(__nccwpck_require__(1017));
 function crappyConvertToCommonJSImports(filePath) {
     return __awaiter(this, void 0, void 0, function* () {
         const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
@@ -401,31 +336,179 @@ function crappyConvertToCommonJSImports(filePath) {
         return filePath;
     });
 }
+function loadCalcExamples() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const calcDir = core.getInput('calc-dir', { required: true });
+        const examplesPath = path_1.default.resolve(calcDir, 'examples.js');
+        core.debug(`Examples file path: ${examplesPath}`);
+        const exists = fs_1.default.existsSync(examplesPath);
+        if (!exists) {
+            throw new Error('Examples.js file not found.');
+        }
+        yield crappyConvertToCommonJSImports(examplesPath);
+        const examples = yield Promise.resolve(`${examplesPath}`).then(s => __importStar(require(s)));
+        return examples;
+    });
+}
+exports.loadCalcExamples = loadCalcExamples;
+
+
+/***/ }),
+
+/***/ 6322:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadCalcParams = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const fs_1 = __importDefault(__nccwpck_require__(7147));
+const path_1 = __importDefault(__nccwpck_require__(1017));
+function crappyConvertToCommonJSImports(filePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
+        const nextFileContents = fileContents.replace(/^export default \{/, 'module.exports = [');
+        yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
+        return filePath;
+    });
+}
+function loadCalcParams() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const calcDir = core.getInput('calc-dir', { required: true });
+        const paramsPath = path_1.default.resolve(calcDir, 'params.js');
+        core.debug(`Params file path: ${paramsPath}`);
+        const exists = fs_1.default.existsSync(paramsPath);
+        if (!exists) {
+            throw new Error('params.js file not found.');
+        }
+        yield crappyConvertToCommonJSImports(paramsPath);
+        const params = yield Promise.resolve(`${paramsPath}`).then(s => __importStar(require(s)));
+        return params;
+    });
+}
+exports.loadCalcParams = loadCalcParams;
+
+
+/***/ }),
+
+/***/ 3109:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.POLLING_INTERVAL = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const load_calc_descriptor_1 = __nccwpck_require__(1317);
+const load_calc_examples_1 = __nccwpck_require__(2741);
+const submit_example_1 = __nccwpck_require__(4715);
+const load_calc_params_1 = __nccwpck_require__(6322);
+function isExampleGroup(x) {
+    return typeof x.members !== 'undefined' && Array.isArray(x.members);
+}
+exports.POLLING_INTERVAL = 2000;
+function getParamUnitsMap(params, unitSystem) {
+    return params.reduce((acc, p) => {
+        if (p.units) {
+            acc[p.keyword] = p.units[unitSystem];
+        }
+        return acc;
+    }, {});
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const calcDir = core.getInput('calc-dir', { required: true });
-            const examplesPath = path_1.default.resolve(calcDir, 'examples.js');
-            core.debug(`examples file path: ${examplesPath}`);
-            const exists = fs_1.default.existsSync(examplesPath);
-            if (!exists) {
-                throw new Error('Examples.js file not found.');
-            }
-            yield crappyConvertToCommonJSImports(examplesPath);
-            const examples = yield Promise.resolve(`${examplesPath}`).then(s => __importStar(require(s)));
+            const descriptor = yield (0, load_calc_descriptor_1.loadCalcDescriptor)();
+            core.debug(`Calculator Descriptor: \n${JSON.stringify(descriptor, undefined, '  ')}`);
+            const calculatorUnitSystem = descriptor.unitSystem;
+            const examples = yield (0, load_calc_examples_1.loadCalcExamples)();
             core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`);
-            yield Promise.all([...examples.USCustomary, ...examples.Metric].map((ex) => __awaiter(this, void 0, void 0, function* () {
-                if (isExampleGroup(ex)) {
-                    core.group(`Example group "${ex.group}"`, () => __awaiter(this, void 0, void 0, function* () {
-                        return Promise.all(ex.members.map((member) => __awaiter(this, void 0, void 0, function* () {
-                            return core.group(`Submitting example "${member.title}" [${member.fileName}]`, () => __awaiter(this, void 0, void 0, function* () { return submitExampleItem(member); }));
-                        })));
-                    }));
-                }
-                else {
-                    return core.group(`Submitting example "${ex.title}" [${ex.fileName}]`, () => __awaiter(this, void 0, void 0, function* () { return submitExampleItem(ex); }));
-                }
-            })));
+            const params = yield (0, load_calc_params_1.loadCalcParams)();
+            const calculatorUnitsMap = getParamUnitsMap(params, calculatorUnitSystem);
+            yield Promise.all(Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
+                const unitSystem = _unitSystem;
+                const exampleUnitsMap = getParamUnitsMap(params, calculatorUnitSystem);
+                return examplesByUnitSystem.map((ex) => __awaiter(this, void 0, void 0, function* () {
+                    if (isExampleGroup(ex)) {
+                        core.group(`Example group "${ex.group}" (${unitSystem})`, () => __awaiter(this, void 0, void 0, function* () {
+                            return Promise.all(ex.members.map((member) => __awaiter(this, void 0, void 0, function* () {
+                                return core.group(`Submitting ${unitSystem} example "${member.title}" [${member.fileName}]`, () => __awaiter(this, void 0, void 0, function* () { return (0, submit_example_1.submitExample)(member, unitSystem, calculatorUnitSystem, exampleUnitsMap, calculatorUnitsMap); }));
+                            })));
+                        }));
+                    }
+                    else {
+                        return core.group(`Submitting ${unitSystem} example "${ex.title}" [${ex.fileName}]`, () => __awaiter(this, void 0, void 0, function* () { return (0, submit_example_1.submitExample)(ex, unitSystem, calculatorUnitSystem, exampleUnitsMap, calculatorUnitsMap); }));
+                    }
+                }));
+            }));
         }
         catch (error) {
             if (error instanceof Error)
@@ -434,15 +517,6 @@ function run() {
     });
 }
 run();
-function sleep(ms) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve();
-            }, ms);
-        });
-    });
-}
 
 
 /***/ }),
@@ -641,6 +715,198 @@ const protoPayload = payload => {
     };
 };
 exports.protoPayload = protoPayload;
+
+
+/***/ }),
+
+/***/ 4715:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.submitExample = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const core = __importStar(__nccwpck_require__(2186));
+const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
+const fs_1 = __importDefault(__nccwpck_require__(7147));
+const compatibility_1 = __nccwpck_require__(5830);
+const serialize_1 = __nccwpck_require__(6823);
+const unit_conversion_1 = __nccwpck_require__(1097);
+const path_1 = __importDefault(__nccwpck_require__(1017));
+const main_1 = __nccwpck_require__(3109);
+var JobStatus;
+(function (JobStatus) {
+    JobStatus[JobStatus["PENDING"] = 0] = "PENDING";
+    JobStatus[JobStatus["COMPLETE"] = 1] = "COMPLETE";
+    JobStatus[JobStatus["ERROR"] = 2] = "ERROR";
+    JobStatus[JobStatus["RUNNING"] = 3] = "RUNNING";
+    JobStatus[JobStatus["UNKNOWN"] = 4] = "UNKNOWN";
+})(JobStatus || (JobStatus = {}));
+function submitExample(ex, exampleUnitSystem, calculatorUnitSystem, exampleUnitMap, calculatorUnitMap) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        core.notice(`Starting submission for "${ex.title}" for file "${ex.fileName}" (${exampleUnitSystem})`);
+        const baseUrl = core.getInput('base-url');
+        if (!baseUrl) {
+            throw new Error('baseUrl not provided');
+        }
+        const authSecret = core.getInput('auth-secret');
+        const calcDir = core.getInput('calc-dir', { required: true });
+        const calcDirName = path_1.default.basename(calcDir);
+        core.info(`calcDirName: ${calcDirName}`);
+        const basePath = core.getInput('static-dir');
+        const filePath = path_1.default.join(basePath, 'examples', calcDirName, ex.fileName);
+        if (!fs_1.default.existsSync(filePath)) {
+            core.error(`Example file for calculator ${calcDirName} not found: ${ex.fileName}`);
+            return;
+        }
+        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
+        const caseParsed = JSON.parse(fileContents);
+        let caseFileConverted = caseParsed;
+        if (exampleUnitSystem !== calculatorUnitSystem) {
+            core.notice(`Example and calculator unit system do not match. Conversion is required.`);
+            caseFileConverted = (0, unit_conversion_1.convertToCalculatorUnits)(caseFileConverted, exampleUnitMap, calculatorUnitMap);
+        }
+        const normalized = (0, compatibility_1.normalizePayload)(caseFileConverted);
+        // core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
+        const protoAsJSON = (0, serialize_1.protoPayload)(normalized);
+        // core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
+        const uri = `https://${baseUrl}/api/job/create`;
+        core.info(`Submitting to URI: "${uri}"`);
+        const response = yield (0, node_fetch_1.default)(uri, {
+            method: 'POST',
+            headers: {
+                'x-internal-auth-secret': authSecret,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(protoAsJSON)
+        });
+        const json = (yield response.json());
+        if (!response.ok)
+            throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`);
+        /*
+        {
+          "metadata": {
+              "jobId": "iiUfmke2lKwESDz3JRvqGg",
+              "status": "OK"
+          }
+        }
+        */
+        const jobId = (_a = json.metadata) === null || _a === void 0 ? void 0 : _a.jobId;
+        if (!jobId) {
+            throw new Error('Did not receive job ID from job create');
+        }
+        core.info(`Job ${jobId} created successfully. Beggining status polling.`);
+        const status = yield pollForJobCompletion(jobId);
+        if (status === JobStatus.ERROR) {
+            core.setFailed(`Job ${jobId} "${ex.fileName}" failed`);
+            return;
+        }
+        core.info(`Job ${jobId} (${calcDirName}) - "${ex.fileName}" finished with status ${status}. 👋`);
+    });
+}
+exports.submitExample = submitExample;
+function pollForJobCompletion(jobId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const baseUrl = core.getInput('base-url');
+        if (!baseUrl) {
+            throw new Error('baseUrl not provided');
+        }
+        const uri = `https://${baseUrl}/api/job/status?job_id=${jobId}`;
+        core.info(`Polling for job status at URI: "${uri}"`);
+        const timeoutSeconds = parseInt(core.getInput('timeout'), 10);
+        if (isNaN(timeoutSeconds)) {
+            throw new Error('Invalid timeout provided');
+        }
+        const maxRetries = timeoutSeconds / (main_1.POLLING_INTERVAL / 1000);
+        return yield getStatus(jobId, uri, maxRetries, r => {
+            var _a, _b, _c, _d;
+            core.debug(`Status state: ${(_a = r.status) === null || _a === void 0 ? void 0 : _a.state} (type: ${typeof ((_b = r.status) === null || _b === void 0 ? void 0 : _b.state)})`);
+            if (((_c = r.status) === null || _c === void 0 ? void 0 : _c.state) === JobStatus.COMPLETE || ((_d = r.status) === null || _d === void 0 ? void 0 : _d.state) === JobStatus.ERROR) {
+                return true;
+            }
+            return false;
+        });
+    });
+}
+function sleep(ms) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, ms);
+        });
+    });
+}
+function getStatus(jobId, uri, retriesRemaining, evaluateResp) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        yield sleep(main_1.POLLING_INTERVAL);
+        core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`);
+        const authSecret = core.getInput('auth-secret');
+        const response = yield (0, node_fetch_1.default)(uri, {
+            headers: {
+                'x-internal-auth-secret': authSecret
+            }
+        });
+        const json = (yield response.json());
+        if (!response.ok)
+            throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`);
+        /*
+          {
+            "jobId": "iiUfmke2lKwESDz3JRvqGg",
+            "status": {
+                "state": 1
+            }
+          }
+        */
+        if (!evaluateResp(json)) {
+            if (retriesRemaining > 0) {
+                return getStatus(jobId, uri, retriesRemaining - 1, evaluateResp);
+            }
+            else {
+                throw new Error(`Timeout exceeded (${core.getInput('timeout')}s)`);
+            }
+        }
+        return ((_a = json.status) === null || _a === void 0 ? void 0 : _a.state) || JobStatus.UNKNOWN;
+    });
+}
 
 
 /***/ }),
@@ -20246,6 +20512,14 @@ exports["default"] = _default;
 
 })));
 //# sourceMappingURL=ponyfill.es2018.js.map
+
+
+/***/ }),
+
+/***/ 1097:
+/***/ ((module) => {
+
+module.exports = eval("require")("./unit-conversion");
 
 
 /***/ }),

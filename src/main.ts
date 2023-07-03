@@ -1,181 +1,63 @@
 import * as core from '@actions/core'
-import fetch from 'node-fetch'
-import fs from 'fs'
-import {normalizePayload} from './compatibility'
-import {protoPayload} from './serialize'
-import path from 'path'
+import {loadCalcDescriptor} from './load-calc-descriptor'
+import {loadCalcExamples} from './load-calc-examples'
+import {submitExample} from './submit-example'
+import {TParams, loadCalcParams} from './load-calc-params'
 
-type TExampleItem = {
+export type TUnitSystem = 'Metric' | 'USCustomary'
+export type TExampleItem = {
   title: string
   fileName: string
 }
-type TExampleGroup = {
+export type TExampleGroup = {
   group: string
   members: TExampleItem[]
 }
-type TExamplesFile = {
-  Metric: (TExampleItem | TExampleGroup)[]
-  USCustomary: (TExampleItem | TExampleGroup)[]
-}
 
-const POLLING_INTERVAL = 2000
+export type TExamplesFile = Record<TUnitSystem, (TExampleItem | TExampleGroup)[]>
 
 function isExampleGroup(x: TExampleItem | TExampleGroup): x is TExampleGroup {
   return typeof (x as TExampleGroup).members !== 'undefined' && Array.isArray((x as TExampleGroup).members)
 }
 
-async function submitExampleItem(ex: TExampleItem): Promise<void> {
-  core.debug(`Starting submission for "${ex.title}" for file "${ex.fileName}"`)
-  const baseUrl = core.getInput('base-url')
-  if (!baseUrl) {
-    throw new Error('baseUrl not provided')
-  }
-  const authSecret = core.getInput('auth-secret')
+export const POLLING_INTERVAL = 2000
 
-  const calcDir: string = core.getInput('calc-dir', {required: true})
-  const calcDirName = path.basename(calcDir)
-  core.info(`calcDirName: ${calcDirName}`)
-  const basePath = core.getInput('static-dir')
-  const filePath = path.join(basePath, 'examples', calcDirName, ex.fileName)
-  if (!fs.existsSync(filePath)) {
-    core.error(`Example file for calculator ${calcDirName} not found: ${ex.fileName}`)
-    return
-  }
-
-  const fileContents = await fs.promises.readFile(filePath, 'utf-8')
-  const caseParsed = JSON.parse(fileContents)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const normalized = normalizePayload(caseParsed) as any
-  // core.debug(`Normalized payload: ${JSON.stringify(normalized)}`)
-  const protoAsJSON = protoPayload(normalized)
-  // core.debug(`Proto as JSON: ${JSON.stringify(protoAsJSON)}`)
-  const uri = `https://${baseUrl}/api/job/create`
-  core.info(`Submitting to URI: "${uri}"`)
-  const response = await fetch(uri, {
-    method: 'POST',
-    headers: {
-      'x-internal-auth-secret': authSecret,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(protoAsJSON)
-  })
-  const json = (await response.json()) as {metadata?: {jobId?: string}}
-  if (!response.ok) throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`)
-  /*
-  {
-    "metadata": {
-        "jobId": "iiUfmke2lKwESDz3JRvqGg",
-        "status": "OK"
+function getParamUnitsMap(params: TParams, unitSystem: TUnitSystem): Record<string, string> {
+  return params.reduce((acc: Record<string, string>, p) => {
+    if (p.units) {
+      acc[p.keyword] = p.units[unitSystem]
     }
-  }
-  */
-  const jobId = json.metadata?.jobId
-  if (!jobId) {
-    throw new Error('Did not receive job ID from job create')
-  }
-  core.info(`Job ${jobId} created successfully. Beggining status polling.`)
-  const status = await pollForJobCompletion(jobId)
-  if (status === JobStatus.ERROR) {
-    core.setFailed(`Job ${jobId} "${ex.fileName}" failed`)
-    return
-  }
-  core.info(`Job ${jobId} (${calcDirName}) - "${ex.fileName}" finished with status ${status}. 👋`)
-}
-
-enum JobStatus {
-  PENDING = 0,
-  COMPLETE = 1,
-  ERROR = 2,
-  RUNNING = 3,
-  UNKNOWN = 4
-}
-
-async function pollForJobCompletion(jobId: string): Promise<JobStatus> {
-  const baseUrl = core.getInput('base-url')
-  if (!baseUrl) {
-    throw new Error('baseUrl not provided')
-  }
-  const uri = `https://${baseUrl}/api/job/status?job_id=${jobId}`
-  core.info(`Polling for job status at URI: "${uri}"`)
-  const timeoutSeconds = parseInt(core.getInput('timeout'), 10)
-  if (isNaN(timeoutSeconds)) {
-    throw new Error('Invalid timeout provided')
-  }
-
-  const maxRetries = timeoutSeconds / (POLLING_INTERVAL / 1000)
-  return await getStatus(jobId, uri, maxRetries, r => {
-    core.debug(`Status state: ${r.status?.state} (type: ${typeof r.status?.state})`)
-    if (r.status?.state === JobStatus.COMPLETE || r.status?.state === JobStatus.ERROR) {
-      return true
-    }
-    return false
-  })
-}
-
-type TJobStatusResponse = {status?: {state: number}}
-
-async function getStatus(jobId: string, uri: string, retriesRemaining: number, evaluateResp: (jobStatusResponse: TJobStatusResponse) => boolean): Promise<JobStatus> {
-  await sleep(POLLING_INTERVAL)
-  core.debug(`Getting job status. Retries remaining: ${retriesRemaining}`)
-  const authSecret = core.getInput('auth-secret')
-  const response = await fetch(uri, {
-    headers: {
-      'x-internal-auth-secret': authSecret
-    }
-  })
-  const json = (await response.json()) as TJobStatusResponse
-  if (!response.ok) throw new Error(`unexpected response ${response.statusText} ${JSON.stringify(json)}`)
-  /*
-    {
-      "jobId": "iiUfmke2lKwESDz3JRvqGg",
-      "status": {
-          "state": 1
-      }
-    }
-  */
-  if (!evaluateResp(json)) {
-    if (retriesRemaining > 0) {
-      return getStatus(jobId, uri, retriesRemaining - 1, evaluateResp)
-    } else {
-      throw new Error(`Timeout exceeded (${core.getInput('timeout')}s)`)
-    }
-  }
-  return json.status?.state || JobStatus.UNKNOWN
-}
-
-async function crappyConvertToCommonJSImports(filePath: string): Promise<string> {
-  const fileContents = await fs.promises.readFile(filePath, 'utf-8')
-  const nextFileContents = fileContents.replace(/^export default \{/, 'module.exports = {')
-  await fs.promises.writeFile(filePath, nextFileContents, 'utf-8')
-  return filePath
+    return acc
+  }, {} as Record<string, string>)
 }
 
 async function run(): Promise<void> {
   try {
-    const calcDir: string = core.getInput('calc-dir', {required: true})
-    const examplesPath = path.resolve(calcDir, 'examples.js')
-    core.debug(`examples file path: ${examplesPath}`)
-    const exists = fs.existsSync(examplesPath)
-    if (!exists) {
-      throw new Error('Examples.js file not found.')
-    }
-    await crappyConvertToCommonJSImports(examplesPath)
-    const examples: TExamplesFile = await import(examplesPath)
+    const descriptor = await loadCalcDescriptor()
+    core.debug(`Calculator Descriptor: \n${JSON.stringify(descriptor, undefined, '  ')}`)
+    const calculatorUnitSystem = descriptor.unitSystem
+    const examples = await loadCalcExamples()
     core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`)
+    const params = await loadCalcParams()
+    const calculatorUnitsMap = getParamUnitsMap(params, calculatorUnitSystem)
 
     await Promise.all(
-      [...examples.USCustomary, ...examples.Metric].map(async ex => {
-        if (isExampleGroup(ex)) {
-          core.group(`Example group "${ex.group}"`, async () => {
-            return Promise.all(
-              ex.members.map(async member => {
-                return core.group(`Submitting example "${member.title}" [${member.fileName}]`, async () => submitExampleItem(member))
-              })
-            )
-          })
-        } else {
-          return core.group(`Submitting example "${ex.title}" [${ex.fileName}]`, async () => submitExampleItem(ex))
-        }
+      Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
+        const unitSystem = _unitSystem as TUnitSystem
+        const exampleUnitsMap = getParamUnitsMap(params, calculatorUnitSystem)
+        return examplesByUnitSystem.map(async ex => {
+          if (isExampleGroup(ex)) {
+            core.group(`Example group "${ex.group}" (${unitSystem})`, async () => {
+              return Promise.all(
+                ex.members.map(async member => {
+                  return core.group(`Submitting ${unitSystem} example "${member.title}" [${member.fileName}]`, async () => submitExample(member, unitSystem, calculatorUnitSystem, exampleUnitsMap, calculatorUnitsMap))
+                })
+              )
+            })
+          } else {
+            return core.group(`Submitting ${unitSystem} example "${ex.title}" [${ex.fileName}]`, async () => submitExample(ex, unitSystem, calculatorUnitSystem, exampleUnitsMap, calculatorUnitsMap))
+          }
+        })
       })
     )
   } catch (error) {
@@ -184,11 +66,3 @@ async function run(): Promise<void> {
 }
 
 run()
-
-async function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve()
-    }, ms)
-  })
-}
