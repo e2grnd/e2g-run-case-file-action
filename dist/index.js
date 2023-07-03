@@ -418,7 +418,9 @@ function loadCalcParams() {
             throw new Error('params.js file not found.');
         }
         yield crappyConvertToCommonJSImports(paramsPath);
-        const params = yield Promise.resolve(`${paramsPath}`).then(s => __importStar(require(s)));
+        // for some reason I can't just export an array. They come out as individual export members
+        const paramsRaw = yield Promise.resolve(`${paramsPath}`).then(s => __importStar(require(s)));
+        const params = Object.values(paramsRaw);
         return params;
     });
 }
