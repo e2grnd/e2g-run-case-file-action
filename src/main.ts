@@ -47,7 +47,7 @@ async function run(): Promise<void> {
       Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
         core.debug(`examplesByUnitSystem: ${JSON.stringify(examplesByUnitSystem)}`)
         const unitSystem = _unitSystem as TUnitSystem
-        const exampleUnitsMap = getParamUnitsMap(params, calculatorUnitSystem)
+        const exampleUnitsMap = getParamUnitsMap(params, unitSystem)
         core.debug(`exampleUnitsMap: ${JSON.stringify(exampleUnitsMap, undefined, '  ')}`)
         return examplesByUnitSystem.map(async ex => {
           if (isExampleGroup(ex)) {

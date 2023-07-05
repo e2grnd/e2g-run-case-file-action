@@ -4,7 +4,7 @@ import fetch from 'node-fetch'
 import fs from 'fs'
 import {normalizePayload} from './compatibility'
 import {protoPayload} from './serialize'
-// import {convertToCalculatorUnits} from './unit-conversion'
+import {convertToCalculatorUnits} from './unit-conversion'
 import path from 'path'
 import {POLLING_INTERVAL, TExampleItem, TUnitSystem} from './main'
 
@@ -20,7 +20,6 @@ type TJobStatusResponse = {status?: {state: number}}
 
 type TParamUnitMap = Record<string, string>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSystem, calculatorUnitSystem: TUnitSystem, exampleUnitMap: TParamUnitMap, calculatorUnitMap: TParamUnitMap): Promise<void> {
   core.info(`Starting submission for "${ex.title}" for file "${ex.fileName}" (${exampleUnitSystem})`)
   const baseUrl = core.getInput('base-url')
@@ -41,14 +40,12 @@ export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSy
 
   const fileContents = await fs.promises.readFile(filePath, 'utf-8')
   const caseParsed = JSON.parse(fileContents)
-  const caseFileConverted = caseParsed
-  // DISABLED
-  /*
+  let caseFileConverted = caseParsed
+
   if (exampleUnitSystem !== calculatorUnitSystem) {
     core.debug(`Example and calculator unit system do not match. Conversion is required.`)
     caseFileConverted = convertToCalculatorUnits(caseFileConverted, exampleUnitMap, calculatorUnitMap)
   }
-  */
   const normalized = normalizePayload(caseFileConverted) as any
 
   try {
