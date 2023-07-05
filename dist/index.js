@@ -3426,13 +3426,17 @@ function convertToCalculatorUnits(inputData, currentUnits, calculatorUnits) {
                     if (Array.isArray(paramKW.value)) {
                         if (currentUnits[paramKW.name] !== undefined && calculatorUnits[paramKW.name]) {
                             for (n = 0; n < paramKW.value.length; n += 1) {
-                                paramKW.value[n] = convertUnits(paramKW.value[n], currentUnits[paramKW.name], calculatorUnits[paramKW.name]);
+                                const newVal = convertUnits(paramKW.value[n], currentUnits[paramKW.name], calculatorUnits[paramKW.name]);
+                                core.debug(`Converting ${paramKW.name}: "${paramKW.value}" => "${newVal}"`);
+                                paramKW.value[n] = newVal;
                             }
                         }
                     }
                     else {
                         if (currentUnits[paramKW.name] !== undefined && calculatorUnits[paramKW.name]) {
-                            paramKW.value = convertUnits(paramKW.value, currentUnits[paramKW.name], calculatorUnits[paramKW.name]);
+                            const newVal = convertUnits(paramKW.value, currentUnits[paramKW.name], calculatorUnits[paramKW.name]);
+                            core.debug(`Converting ${paramKW.name}: "${paramKW.value}" => "${newVal}"`);
+                            paramKW.value = newVal;
                         }
                     }
                 }
