@@ -1,6 +1,8 @@
 /* eslint-disable eslint-comments/no-unlimited-disable */
 /* eslint-disable */
 // @ts-nocheck
+import * as core from '@actions/core'
+
 export const reverseUnitsLookupTable = {
   DimensionlessEnglish: {
     system: 'English',
@@ -2432,7 +2434,9 @@ export function convertToCalculatorUnits(inputData, currentUnits, calculatorUnit
         }
       } else {
         if(currentUnits[param.name] !== undefined && calculatorUnits[param.name]) {
-          param.value = convertUnits(param.value, currentUnits[param.name], calculatorUnits[param.name])
+          const newVal = convertUnits(param.value, currentUnits[param.name], calculatorUnits[param.name])
+          core.debug(`Converting ${param.name}: "${param.value}" => "${newVal}"`)
+          param.value = newVal
         }
       }
     }

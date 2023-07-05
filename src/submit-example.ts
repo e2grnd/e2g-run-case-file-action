@@ -40,13 +40,12 @@ export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSy
 
   const fileContents = await fs.promises.readFile(filePath, 'utf-8')
   const caseParsed = JSON.parse(fileContents)
-  let caseFileConverted = caseParsed
 
   if (exampleUnitSystem !== calculatorUnitSystem) {
     core.debug(`Example and calculator unit system do not match. Conversion is required.`)
-    caseFileConverted = convertToCalculatorUnits(caseFileConverted, exampleUnitMap, calculatorUnitMap)
+    caseParsed.data = convertToCalculatorUnits(caseParsed.data, exampleUnitMap, calculatorUnitMap)
   }
-  const normalized = normalizePayload(caseFileConverted) as any
+  const normalized = normalizePayload(caseParsed) as any
 
   try {
     normalized.metadata.jobName = `[${exampleUnitSystem}] ${ex.title}`

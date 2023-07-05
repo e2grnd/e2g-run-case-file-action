@@ -1,6 +1,7 @@
 {
   "metadata": {
     "calculatorName": "branch",
+    "jobName": "[Metric] Design: Reinforcing Pad Recommended",
     "params": [
       {
         "name": "version",
@@ -19,7 +20,7 @@
       {
         "name": "timeStamp",
         "valuesString": [
-          "2018-10-19T20:33:55.017Z"
+          "2018-10-19T20:33:55.021Z"
         ],
         "valueType": 0
       },
@@ -116,7 +117,7 @@
           {
             "name": "P",
             "valuesDouble": [
-              1.5
+              4.75
             ],
             "valueType": 2
           },
