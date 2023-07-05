@@ -6,7 +6,7 @@ import {normalizePayload} from './compatibility'
 import {protoPayload} from './serialize'
 import {convertToCalculatorUnits} from './unit-conversion'
 import path from 'path'
-import {POLLING_INTERVAL, TExampleItem, TUnitSystem} from './main'
+import {POLLING_INTERVAL, TExampleItem, TUnitSystem, UnitMap} from './main'
 
 enum JobStatus {
   PENDING = 0,
@@ -18,9 +18,7 @@ enum JobStatus {
 
 type TJobStatusResponse = {status?: {state: number}}
 
-type TParamUnitMap = Record<string, string>
-
-export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSystem, calculatorUnitSystem: TUnitSystem, exampleUnitMap: TParamUnitMap, calculatorUnitMap: TParamUnitMap): Promise<void> {
+export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSystem, calculatorUnitSystem: TUnitSystem, exampleUnitMap: UnitMap, calculatorUnitMap: UnitMap): Promise<void> {
   core.info(`Starting submission for "${ex.title}" for file "${ex.fileName}" (${exampleUnitSystem})`)
   const baseUrl = core.getInput('base-url')
   if (!baseUrl) {

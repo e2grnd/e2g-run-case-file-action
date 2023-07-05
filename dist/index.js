@@ -429,6 +429,79 @@ exports.loadCalcParams = loadCalcParams;
 
 /***/ }),
 
+/***/ 8243:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadCalcDataTables = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const fs_1 = __importDefault(__nccwpck_require__(7147));
+const path_1 = __importDefault(__nccwpck_require__(1017));
+function crappyConvertToCommonJSImports(filePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
+        const nextFileContents = fileContents.replace(/^export default \[/, 'module.exports = [');
+        yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
+        return filePath;
+    });
+}
+function loadCalcDataTables() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const calcDir = core.getInput('calc-dir', { required: true });
+        const filePath = path_1.default.resolve(calcDir, 'dataTables.js');
+        core.debug(`dataTables file path: ${filePath}`);
+        const exists = fs_1.default.existsSync(filePath);
+        if (!exists) {
+            throw new Error('dataTables.js file not found.');
+        }
+        yield crappyConvertToCommonJSImports(filePath);
+        const raw = yield Promise.resolve(`${filePath}`).then(s => __importStar(require(s)));
+        // const params: TParams = Object.values(paramsRaw) as TParams
+        return raw.default;
+    });
+}
+exports.loadCalcDataTables = loadCalcDataTables;
+
+
+/***/ }),
+
 /***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -468,22 +541,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.POLLING_INTERVAL = void 0;
+/* eslint-disable github/array-foreach */
 const core = __importStar(__nccwpck_require__(2186));
 const load_calc_descriptor_1 = __nccwpck_require__(1317);
 const load_calc_examples_1 = __nccwpck_require__(2741);
 const submit_example_1 = __nccwpck_require__(4715);
 const load_calc_params_1 = __nccwpck_require__(6322);
+const load_calc_tables_1 = __nccwpck_require__(8243);
 function isExampleGroup(x) {
     return typeof x.members !== 'undefined' && Array.isArray(x.members);
 }
 exports.POLLING_INTERVAL = 2000;
-function getParamUnitsMap(params, unitSystem) {
+function getParamUnitsMap(params, dataTables, unitSystem) {
+    const dtUnits = dataTables.reduce((acc, t) => {
+        if (t.keywords) {
+            t.keywords.forEach(kw => {
+                if (kw.units) {
+                    acc[kw.keyword] = kw.units[unitSystem];
+                }
+            });
+        }
+        return acc;
+    }, {});
     return params.reduce((acc, p) => {
         if (p.units) {
             acc[p.keyword] = p.units[unitSystem];
         }
         return acc;
-    }, {});
+    }, dtUnits);
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -495,12 +580,19 @@ function run() {
             // core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`)
             const params = yield (0, load_calc_params_1.loadCalcParams)();
             // core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`)
-            const calculatorUnitsMap = getParamUnitsMap(params, calculatorUnitSystem);
+            let dataTables = [];
+            try {
+                dataTables = yield (0, load_calc_tables_1.loadCalcDataTables)();
+            }
+            catch (err) {
+                //pass
+            }
+            const calculatorUnitsMap = getParamUnitsMap(params, dataTables, calculatorUnitSystem);
             core.debug(`calculatorUnitsMap: ${JSON.stringify(calculatorUnitsMap, undefined, '  ')}`);
             yield Promise.all(Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
                 core.debug(`examplesByUnitSystem: ${JSON.stringify(examplesByUnitSystem)}`);
                 const unitSystem = _unitSystem;
-                const exampleUnitsMap = getParamUnitsMap(params, unitSystem);
+                const exampleUnitsMap = getParamUnitsMap(params, dataTables, unitSystem);
                 core.debug(`exampleUnitsMap: ${JSON.stringify(exampleUnitsMap, undefined, '  ')}`);
                 return examplesByUnitSystem.map((ex) => __awaiter(this, void 0, void 0, function* () {
                     if (isExampleGroup(ex)) {

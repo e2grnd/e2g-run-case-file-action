@@ -1,8 +1,10 @@
+/* eslint-disable github/array-foreach */
 import * as core from '@actions/core'
 import {loadCalcDescriptor} from './load-calc-descriptor'
 import {loadCalcExamples} from './load-calc-examples'
 import {submitExample} from './submit-example'
 import {TParams, loadCalcParams} from './load-calc-params'
+import {TDataTables, loadCalcDataTables} from './load-calc-tables'
 
 export type TUnitSystem = 'Metric' | 'USCustomary'
 export type TExampleItem = {
@@ -22,13 +24,25 @@ function isExampleGroup(x: TExampleItem | TExampleGroup): x is TExampleGroup {
 
 export const POLLING_INTERVAL = 2000
 
-function getParamUnitsMap(params: TParams, unitSystem: TUnitSystem): Record<string, string> {
-  return params.reduce((acc: Record<string, string>, p) => {
+export type UnitMap = Record<string, string | string[]>
+
+function getParamUnitsMap(params: TParams, dataTables: TDataTables, unitSystem: TUnitSystem): UnitMap {
+  const dtUnits = dataTables.reduce((acc, t) => {
+    if (t.keywords) {
+      t.keywords.forEach(kw => {
+        if (kw.units) {
+          acc[kw.keyword] = kw.units[unitSystem]
+        }
+      })
+    }
+    return acc
+  }, {} as UnitMap)
+  return params.reduce((acc: UnitMap, p) => {
     if (p.units) {
       acc[p.keyword] = p.units[unitSystem]
     }
     return acc
-  }, {} as Record<string, string>)
+  }, dtUnits)
 }
 
 async function run(): Promise<void> {
@@ -40,14 +54,22 @@ async function run(): Promise<void> {
     // core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`)
     const params = await loadCalcParams()
     // core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`)
-    const calculatorUnitsMap = getParamUnitsMap(params, calculatorUnitSystem)
+
+    let dataTables: TDataTables = []
+    try {
+      dataTables = await loadCalcDataTables()
+    } catch (err) {
+      //pass
+    }
+
+    const calculatorUnitsMap = getParamUnitsMap(params, dataTables, calculatorUnitSystem)
     core.debug(`calculatorUnitsMap: ${JSON.stringify(calculatorUnitsMap, undefined, '  ')}`)
 
     await Promise.all(
       Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
         core.debug(`examplesByUnitSystem: ${JSON.stringify(examplesByUnitSystem)}`)
         const unitSystem = _unitSystem as TUnitSystem
-        const exampleUnitsMap = getParamUnitsMap(params, unitSystem)
+        const exampleUnitsMap = getParamUnitsMap(params, dataTables, unitSystem)
         core.debug(`exampleUnitsMap: ${JSON.stringify(exampleUnitsMap, undefined, '  ')}`)
         return examplesByUnitSystem.map(async ex => {
           if (isExampleGroup(ex)) {
