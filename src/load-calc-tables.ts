@@ -19,13 +19,15 @@ export async function crappyConvertToCommonJSImports(filePath: string): Promise<
   // const nextFileContents = fileContents.replace(/export default \[/, 'module.exports = [')
   const nextFileContents = await swc
     .transform(fileContents, {
-      filename: path.basename(filePath)
+      filename: path.basename(filePath),
+      module: {
+        type: 'commonjs'
+      }
     })
     // eslint-disable-next-line github/no-then
     .then(output => {
       return output.code
     })
-  core.info(`nextFileContents: ${nextFileContents}`)
   await fs.promises.writeFile(filePath, nextFileContents, 'utf-8')
   return filePath
 }

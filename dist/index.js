@@ -538,13 +538,15 @@ function crappyConvertToCommonJSImports(filePath) {
         // const nextFileContents = fileContents.replace(/export default \[/, 'module.exports = [')
         const nextFileContents = yield swc
             .transform(fileContents, {
-            filename: path_1.default.basename(filePath)
+            filename: path_1.default.basename(filePath),
+            module: {
+                type: 'commonjs'
+            }
         })
             // eslint-disable-next-line github/no-then
             .then(output => {
             return output.code;
         });
-        core.info(`nextFileContents: ${nextFileContents}`);
         yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
         return filePath;
     });
