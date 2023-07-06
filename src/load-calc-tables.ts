@@ -25,7 +25,7 @@ export async function loadCalcDataTables(): Promise<TDataTables> {
   core.debug(`dataTables file path: ${filePath}`)
   const exists = fs.existsSync(filePath)
   if (!exists) {
-    throw new Error('dataTables.js file not found.')
+    return []
   }
   await crappyConvertToCommonJSImports(filePath)
   const raw = await import(filePath)

@@ -3,7 +3,7 @@ import {loadCalcDescriptor} from './load-calc-descriptor'
 import {loadCalcExamples} from './load-calc-examples'
 import {submitExample} from './submit-example'
 import {loadCalcParams} from './load-calc-params'
-import {TDataTables, loadCalcDataTables} from './load-calc-tables'
+import {loadCalcDataTables} from './load-calc-tables'
 import {getParamUnitsMap} from './get-param-units-map'
 
 export type TUnitSystem = 'Metric' | 'USCustomary'
@@ -34,14 +34,8 @@ async function run(): Promise<void> {
     const params = await loadCalcParams()
     // core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`)
 
-    let dataTables: TDataTables = []
-    try {
-      dataTables = await loadCalcDataTables()
-      core.info('dataTables.js found')
-      core.debug(`dataTables: ${JSON.stringify(dataTables, undefined, '  ')}`)
-    } catch (err) {
-      //pass
-    }
+    const dataTables = await loadCalcDataTables()
+    core.debug(`dataTables: ${JSON.stringify(dataTables, undefined, '  ')}`)
 
     const calculatorUnitsMap = getParamUnitsMap(params, dataTables, calculatorUnitSystem)
     core.debug(`calculatorUnitsMap: ${JSON.stringify(calculatorUnitsMap, undefined, '  ')}`)

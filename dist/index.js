@@ -519,7 +519,7 @@ function loadCalcDataTables() {
         core.debug(`dataTables file path: ${filePath}`);
         const exists = fs_1.default.existsSync(filePath);
         if (!exists) {
-            throw new Error('dataTables.js file not found.');
+            return [];
         }
         yield crappyConvertToCommonJSImports(filePath);
         const raw = yield Promise.resolve(`${filePath}`).then(s => __importStar(require(s)));
@@ -592,15 +592,8 @@ function run() {
             // core.debug(`Examples: \n${JSON.stringify(examples, undefined, '  ')}`)
             const params = yield (0, load_calc_params_1.loadCalcParams)();
             // core.debug(`Params: \n${JSON.stringify(params, undefined, '  ')}`)
-            let dataTables = [];
-            try {
-                dataTables = yield (0, load_calc_tables_1.loadCalcDataTables)();
-                core.info('dataTables.js found');
-                core.debug(`dataTables: ${JSON.stringify(dataTables, undefined, '  ')}`);
-            }
-            catch (err) {
-                //pass
-            }
+            const dataTables = yield (0, load_calc_tables_1.loadCalcDataTables)();
+            core.debug(`dataTables: ${JSON.stringify(dataTables, undefined, '  ')}`);
             const calculatorUnitsMap = (0, get_param_units_map_1.getParamUnitsMap)(params, dataTables, calculatorUnitSystem);
             core.debug(`calculatorUnitsMap: ${JSON.stringify(calculatorUnitsMap, undefined, '  ')}`);
             yield Promise.all(Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
