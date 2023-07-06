@@ -29,6 +29,80 @@ module.exports = require(__nccwpck_require__.ab + "swc.linux-x64-gnu.node")
 
 /***/ }),
 
+/***/ 4345:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.clobberTransformToCommonJS = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(7147));
+const path_1 = __importDefault(__nccwpck_require__(1017));
+const swc = __importStar(__nccwpck_require__(874));
+/**
+ * Transforms an es6 js file to commonjs in-place.
+ * WARNING: DESTRUCTIVE! This will overwrite the file.
+ * @param filePath path to the file to transform
+ * @returns the same filePath
+ */
+function clobberTransformToCommonJS(filePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
+        const nextFileContents = yield swc
+            .transform(fileContents, {
+            filename: path_1.default.basename(filePath),
+            module: {
+                type: 'commonjs'
+            }
+        })
+            // eslint-disable-next-line github/no-then
+            .then(output => {
+            return output.code;
+        });
+        yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
+        return filePath;
+    });
+}
+exports.clobberTransformToCommonJS = clobberTransformToCommonJS;
+
+
+/***/ }),
+
 /***/ 5830:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -385,14 +459,7 @@ exports.loadCalcExamples = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
-function crappyConvertToCommonJSImports(filePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
-        const nextFileContents = fileContents.replace(/export default \{/, 'module.exports = {');
-        yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
-        return filePath;
-    });
-}
+const clobber_transform_file_1 = __nccwpck_require__(4345);
 function loadCalcExamples() {
     return __awaiter(this, void 0, void 0, function* () {
         const calcDir = core.getInput('calc-dir', { required: true });
@@ -402,7 +469,7 @@ function loadCalcExamples() {
         if (!exists) {
             throw new Error('Examples.js file not found.');
         }
-        yield crappyConvertToCommonJSImports(examplesPath);
+        yield (0, clobber_transform_file_1.clobberTransformToCommonJS)(examplesPath);
         const examples = yield Promise.resolve(`${examplesPath}`).then(s => __importStar(require(s)));
         return examples.default;
     });
@@ -457,14 +524,7 @@ exports.loadCalcParams = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
-function crappyConvertToCommonJSImports(filePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
-        const nextFileContents = fileContents.replace(/export default \[/, 'module.exports = [');
-        yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
-        return filePath;
-    });
-}
+const clobber_transform_file_1 = __nccwpck_require__(4345);
 function loadCalcParams() {
     return __awaiter(this, void 0, void 0, function* () {
         const calcDir = core.getInput('calc-dir', { required: true });
@@ -474,7 +534,7 @@ function loadCalcParams() {
         if (!exists) {
             throw new Error('params.js file not found.');
         }
-        yield crappyConvertToCommonJSImports(paramsPath);
+        yield (0, clobber_transform_file_1.clobberTransformToCommonJS)(paramsPath);
         // for some reason I can't just export an array. They come out as individual export members
         const paramsRaw = yield Promise.resolve(`${paramsPath}`).then(s => __importStar(require(s)));
         // const params: TParams = Object.values(paramsRaw) as TParams
@@ -527,32 +587,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.loadCalcDataTables = exports.crappyConvertToCommonJSImports = void 0;
+exports.loadCalcDataTables = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const swc = __importStar(__nccwpck_require__(874));
-function crappyConvertToCommonJSImports(filePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
-        // const nextFileContents = fileContents.replace(/export default \[/, 'module.exports = [')
-        const nextFileContents = yield swc
-            .transform(fileContents, {
-            filename: path_1.default.basename(filePath),
-            module: {
-                type: 'commonjs'
-            }
-        })
-            // eslint-disable-next-line github/no-then
-            .then(output => {
-            return output.code;
-        });
-        core.info(`nextFileContents: \n${nextFileContents}`);
-        yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
-        return filePath;
-    });
-}
-exports.crappyConvertToCommonJSImports = crappyConvertToCommonJSImports;
+const clobber_transform_file_1 = __nccwpck_require__(4345);
 function loadCalcDataTables() {
     return __awaiter(this, void 0, void 0, function* () {
         const calcDir = core.getInput('calc-dir', { required: true });
@@ -562,7 +601,7 @@ function loadCalcDataTables() {
         if (!exists) {
             return [];
         }
-        yield crappyConvertToCommonJSImports(filePath);
+        yield (0, clobber_transform_file_1.clobberTransformToCommonJS)(filePath);
         const raw = yield Promise.resolve(`${filePath}`).then(s => __importStar(require(s)));
         // const params: TParams = Object.values(paramsRaw) as TParams
         return raw.default;
@@ -5740,7 +5779,7 @@ switch (platform) {
                     localFileExisted = existsSync(join(__dirname, 'swc.linux-arm64-musl.node'));
                     try {
                         if (localFileExisted) {
-                            nativeBinding = __nccwpck_require__(2421);
+                            nativeBinding = __nccwpck_require__(5712);
                         }
                         else {
                             nativeBinding = __nccwpck_require__(2603);
@@ -15317,7 +15356,7 @@ module.exports = assocIndexOf;
 /***/ 3236:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var baseForOwn = __nccwpck_require__(5712),
+var baseForOwn = __nccwpck_require__(3176),
     createBaseEach = __nccwpck_require__(9327);
 
 /**
@@ -15386,7 +15425,7 @@ module.exports = baseFor;
 
 /***/ }),
 
-/***/ 5712:
+/***/ 3176:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 var baseFor = __nccwpck_require__(6588),
@@ -18135,7 +18174,7 @@ module.exports = filter;
 /***/ 6141:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var baseForOwn = __nccwpck_require__(5712),
+var baseForOwn = __nccwpck_require__(3176),
     castFunction = __nccwpck_require__(631);
 
 /**
@@ -24237,7 +24276,7 @@ module.exports = eval("require")("./swc.linux-arm64-gnu.node");
 
 /***/ }),
 
-/***/ 2421:
+/***/ 5712:
 /***/ ((module) => {
 
 module.exports = eval("require")("./swc.linux-arm64-musl.node");

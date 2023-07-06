@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import fs from 'fs'
 import path from 'path'
 import {TUnitSystem} from './main'
-import * as swc from '@swc/core'
+import {clobberTransformToCommonJS} from './clobber-transform-file'
 
 export type KWItem = {
   keyword: string
@@ -14,24 +14,6 @@ interface DataTableItem {
 }
 export type TDataTables = DataTableItem[]
 
-export async function crappyConvertToCommonJSImports(filePath: string): Promise<string> {
-  const fileContents = await fs.promises.readFile(filePath, 'utf-8')
-  // const nextFileContents = fileContents.replace(/export default \[/, 'module.exports = [')
-  const nextFileContents = await swc
-    .transform(fileContents, {
-      filename: path.basename(filePath),
-      module: {
-        type: 'commonjs'
-      }
-    })
-    // eslint-disable-next-line github/no-then
-    .then(output => {
-      return output.code
-    })
-  core.info(`nextFileContents: \n${nextFileContents}`)
-  await fs.promises.writeFile(filePath, nextFileContents, 'utf-8')
-  return filePath
-}
 export async function loadCalcDataTables(): Promise<TDataTables> {
   const calcDir: string = core.getInput('calc-dir', {required: true})
   const filePath = path.resolve(calcDir, 'dataTables.js')
@@ -40,7 +22,7 @@ export async function loadCalcDataTables(): Promise<TDataTables> {
   if (!exists) {
     return []
   }
-  await crappyConvertToCommonJSImports(filePath)
+  await clobberTransformToCommonJS(filePath)
   const raw = await import(filePath)
   // const params: TParams = Object.values(paramsRaw) as TParams
   return raw.default as TDataTables

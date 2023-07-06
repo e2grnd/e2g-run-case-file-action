@@ -2,13 +2,8 @@ import * as core from '@actions/core'
 import fs from 'fs'
 import path from 'path'
 import {TExamplesFile} from './main'
+import {clobberTransformToCommonJS} from './clobber-transform-file'
 
-async function crappyConvertToCommonJSImports(filePath: string): Promise<string> {
-  const fileContents = await fs.promises.readFile(filePath, 'utf-8')
-  const nextFileContents = fileContents.replace(/export default \{/, 'module.exports = {')
-  await fs.promises.writeFile(filePath, nextFileContents, 'utf-8')
-  return filePath
-}
 export async function loadCalcExamples(): Promise<TExamplesFile> {
   const calcDir: string = core.getInput('calc-dir', {required: true})
   const examplesPath = path.resolve(calcDir, 'examples.js')
@@ -17,7 +12,7 @@ export async function loadCalcExamples(): Promise<TExamplesFile> {
   if (!exists) {
     throw new Error('Examples.js file not found.')
   }
-  await crappyConvertToCommonJSImports(examplesPath)
+  await clobberTransformToCommonJS(examplesPath)
   const examples = await import(examplesPath)
   return examples.default as TExamplesFile
 }
