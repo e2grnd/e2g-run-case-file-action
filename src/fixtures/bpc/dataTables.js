@@ -1,85 +1,6 @@
 module.exports = [
   {
-    name: 'gridTable',
-    keywords: [
-      {
-        keyword: 'GRID_DATA',
-        colHeaders(index) {
-          return `T${index}`
-        },
-        rowHeaders(index) {
-          return `A${index}`
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-    ],
-    type: 'input',
-    options: {
-      type: 'numeric',
-      numericFormat: { pattern: '0.00' },
-      minSpareRows: 1,
-      startRows: 3,
-      startCols: 3,
-      contextMenu: ['row_above',
-        'row_below',
-        '---------',
-        'col_left',
-        'col_right',
-        '---------',
-        'remove_row',
-        'remove_col',
-        '---------',
-        'undo',
-        'redo',
-        '---------',
-        'copy',
-        'cut',
-      ],
-    },
-  },
-  {
-    name: 'cyclicPressureTable',
-    keywords: [
-      {
-        keyword: 'MIN_PRESSURE',
-        colHeaders: {
-          USCustomary: ['Min. Pressure (psi)'],
-          Metric: ['Min. Pressure (MPs)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['psi'],
-          Metric: ['MPa'],
-        },
-      },
-      {
-        keyword: 'MAX_PRESSURE',
-        colHeaders: {
-          USCustomary: ['Max. Pressure (psi)'],
-          Metric: ['Max. Pressure (MPs)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['psi'],
-          Metric: ['MPa'],
-        },
-      },
-      {
-        keyword: 'YEARLY_NUMBER_OF_CYCLES',
-        colHeaders: {
-          USCustomary: ['No. of Cycles per Year (n)'],
-          Metric: ['No. of Cycles per Year (n)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['DimensionlessEnglish'],
-          Metric: ['DimensionlessMetric'],
-        },
-      },
-    ],
+    name: 'mainAssessmentTable',
     columnDisplayOptions: [
       {
         dataType: 'float',
@@ -88,806 +9,556 @@ module.exports = [
         dataType: 'float',
       },
       {
-        dataType: 'integer',
+        dataType: 'text',
       },
     ],
-    type: 'input',
-    options: {
-      maxRows: 2000,
-      columns: [
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0' } },
-      ],
-      minSpareRows: 1,
-      contextMenu: ['row_above',
-        'row_below',
-        '---------',
-        'remove_row',
-        '---------',
-        'undo',
-        'redo',
-        '---------',
-        'copy',
-        'cut',
-      ],
-      stretchH: 'all',
-    },
-  },
-  {
-    name: 'pressureData1',
     keywords: [
       {
-        keyword: 'PRES_TIME_1',
+        keyword: 'mainAssessmentTable',
         colHeaders: {
-          USCustomary: ['Times (yrs)'],
-          Metric: ['Times (yrs)'],
-          alignOptions: ['center'],
+          USCustomary: ['Calculated (psi)', 'Allowable (psi)', 'Pass/Fail '],
+          Metric: ['Calculated (kPa)', 'Allowable (kPa)', 'Pass/Fail '],
         },
         units: {
-          USCustomary: ['yrs'],
-          Metric: ['yrs'],
+          USCustomary: ['psi', 'psi', 'DimensionlessEnglish'],
+          Metric: ['kPa', 'kPa', 'DimensionlessMetric'],
         },
       },
-      {
-        keyword: 'PRES_HIST_1',
-        colHeaders: {
-          USCustomary: ['Pressure (psi)'],
-          Metric: ['Pressure (MPa)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['psi'],
-          Metric: ['MPa'],
-        },
-      },
-    ],
-    columnDisplayOptions: [
-      {
-        dataType: 'float',
-      },
-      {
-        dataType: 'float',
-      },
-    ],
-    type: 'input',
-    options: {
-      columns: [
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-      ],
-      minSpareRows: 1,
-      contextMenu: ['row_above',
-        'row_below',
-        '---------',
-        'remove_row',
-        '---------',
-        'undo',
-        'redo',
-        '---------',
-        'copy',
-        'cut',
-      ],
-      stretchH: 'all',
-    },
-  },
-  {
-    name: 'pressureData2',
-    keywords: [
-      {
-        keyword: 'PRES_TIME_2',
-        colHeaders: {
-          USCustomary: ['Times (yrs)'],
-          Metric: ['Times (yrs)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['yrs'],
-          Metric: ['yrs'],
-        },
-      },
-      {
-        keyword: 'PRES_HIST_2',
-        colHeaders: {
-          USCustomary: ['Pressure (psi)'],
-          Metric: ['Pressure (MPa)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['psi'],
-          Metric: ['MPa'],
-        },
-      },
-    ],
-    columnDisplayOptions: [
-      {
-        dataType: 'float',
-      },
-      {
-        dataType: 'float',
-      },
-    ],
-    type: 'input',
-    options: {
-      columns: [
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-      ],
-      minSpareRows: 1,
-      contextMenu: ['row_above',
-        'row_below',
-        '---------',
-        'remove_row',
-        '---------',
-        'undo',
-        'redo',
-        '---------',
-        'copy',
-        'cut',
-      ],
-      stretchH: 'all',
-    },
-  },
-  {
-    name: 'axialProfileTable',
-    keywords: [
-      {
-        keyword: 'AXIAL_POSITION',
-        colHeaders: {
-          USCustomary: ['Axial Position (in)'],
-          Metric: ['Axial Position (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-      {
-        keyword: 'AXIAL_WALL_DISP',
-        colHeaders: {
-          USCustomary: ['Wall Displacement (in)'],
-          Metric: ['Wall Displacement (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-    ],
-    columnDisplayOptions: [
-      {
-        dataType: 'float',
-      },
-      {
-        dataType: 'float',
-      },
-    ],
-    type: 'input',
-    options: {
-      columns: [
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-      ],
-      minSpareRows: 1,
-      contextMenu: ['row_above',
-        'row_below',
-        '---------',
-        'remove_row',
-        '---------',
-        'undo',
-        'redo',
-        '---------',
-        'copy',
-        'cut',
-      ],
-      stretchH: 'all',
-    },
-  },
-  {
-    name: 'transverseProfileTable',
-    keywords: [
-      {
-        keyword: 'TRANSVERSE_POSITION',
-        colHeaders: {
-          USCustomary: ['Transverse Position (in)'],
-          Metric: ['Transverse Position (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-      {
-        keyword: 'TRANSVERSE_WALL_DISP',
-        colHeaders: {
-          USCustomary: ['Wall Displacement (in)'],
-          Metric: ['Wall Displacement (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-    ],
-    columnDisplayOptions: [
-      {
-        dataType: 'float',
-      },
-      {
-        dataType: 'float',
-      },
-    ],
-    type: 'input',
-    options: {
-      columns: [
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-      ],
-      minSpareRows: 1,
-      contextMenu: ['row_above',
-        'row_below',
-        '---------',
-        'remove_row',
-        '---------',
-        'undo',
-        'redo',
-        '---------',
-        'copy',
-        'cut',
-      ],
-      stretchH: 'all',
-    },
-  },
-  {
-    name: 'fatigueDetails',
-    keywords: [
-      {
-        keyword: 'PRESSURE_RANGE_COL',
-        colHeaders: {
-          USCustomary: ['Pressure Range (psi)'],
-          Metric: ['Pressure Range (MPa)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['psi'],
-          Metric: ['MPa'],
-        },
-      },
-      {
-        keyword: 'PRESSURE_MEAN_COL',
-        colHeaders: {
-          USCustomary: ['Mean Pressure (psi)'],
-          Metric: ['Mean Pressure (MPa)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['psi'],
-          Metric: ['MPa'],
-        },
-      },
-      {
-        keyword: 'STRESS_RANGE_COL',
-        colHeaders: {
-          USCustomary: ['Stress Range (psi)'],
-          Metric: ['Stress Range (MPa)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['psi'],
-          Metric: ['MPa'],
-        },
-      },
-      {
-        keyword: 'NUMBER_OF_CYCLES_COL',
-        colHeaders: {
-          USCustomary: ['Cycles (n)'],
-          Metric: ['Cycles (n)'],
-          alignOptions: ['center'],
-        },
-      },
-      {
-        keyword: 'PF_COL',
-        colHeaders: {
-          USCustomary: ['PF'],
-          Metric: ['PF'],
-          alignOptions: ['center'],
-        },
-      },
-      {
-        keyword: 'R_COL',
-        colHeaders: {
-          USCustomary: ['R'],
-          Metric: ['R'],
-          alignOptions: ['center'],
-        },
-      },
-      {
-        keyword: 'SP_COL',
-        colHeaders: {
-          USCustomary: ['SP'],
-          Metric: ['SP'],
-          alignOptions: ['center'],
-        },
-      },
-      {
-        keyword: 'LOGA_COL',
-        colHeaders: {
-          USCustomary: ['Log10(A)'],
-          Metric: ['Log10(A)'],
-          alignOptions: ['center'],
-        },
-      },
-      {
-        keyword: 'B_COL',
-        colHeaders: {
-          USCustomary: ['B'],
-          Metric: ['B'],
-          alignOptions: ['center'],
-        },
-      },
-    ],
-    columnDisplayOptions: [
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'float' },
     ],
     type: 'output',
     options: {
-      colWidths: [75, 75, 65, 65, 65, 65, 65, 75, 65],
-      columns: [
-        { type: 'numeric' },
-        { type: 'numeric' },
-        { type: 'numeric' },
-        { type: 'numeric', numericFormat: { pattern: '0.0' } },
-        { type: 'numeric' },
-        { type: 'numeric' },
-        { type: 'numeric' },
-        { type: 'numeric' },
-        { type: 'numeric' },
-      ],
-      stretchH: 'all',
-    },
-  },
-  {
-    name: 'q1GeometricParams',
-    keywords: [
-      {
-        keyword: 'AXIAL_PERCENT',
-        colHeaders: {
-          USCustomary: ['Depth Percent (%)'],
-          Metric: ['Depth Percent (%)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['%'],
-          Metric: ['%'],
-        },
-      },
-      {
-        keyword: 'AXIAL_LENGTH_PARAMS_UPSTREAM',
-        colHeaders: {
-          USCustomary: ['Axial Length (in)'],
-          Metric: ['Axial Length (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-      {
-        keyword: 'AXIAL_AREA_PARAMS_UPSTREAM',
-        colHeaders: {
-          USCustomary: ['Axial Area (in^2)'],
-          Metric: ['Axial Area (mm^2)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in^2'],
-          Metric: ['mm^2'],
-        },
-      },
-      {
-        keyword: 'TRANSVERSE_PERCENT',
-        colHeaders: {
-          USCustomary: ['Depth Percent (%)'],
-          Metric: ['Depth Percent (%)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['%'],
-          Metric: ['%'],
-        },
-      },
-      {
-        keyword: 'TRANSVERSE_LENGTH_PARAMS_CW',
-        colHeaders: {
-          USCustomary: ['Transverse Length (in)'],
-          Metric: ['Transverse Length (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-      {
-        keyword: 'TRANSVERSE_AREA_PARAMS_CW',
-        colHeaders: {
-          USCustomary: ['Transverse Area (in^2)'],
-          Metric: ['Transverse Area (mm^2)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in^2'],
-          Metric: ['mm^2'],
-        },
-      },
-    ],
-    columnDisplayOptions: [
-      { dataType: 'integer' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'integer' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-    ],
-    type: 'output',
-    options: {
-      colWidths: [65, 85, 85, 65, 85, 85],
-      columns: [
-        { type: 'numeric', numericFormat: { pattern: '0' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-      ],
+      rowHeaders: ['Hoop Stress due to Internal Pressure <br /> for Minimum Temperature', 'Hoop Stress due to Internal Pressure <br /> for Maximum Temperature', 'Total Effective Stress <br /> for Minimum Temperature (S<sub>eff,min</sub>)', 'Total Effective Stress <br /> for Maximum Temperature (S<sub>eff,max</sub>)', 'Girth Weld Cyclic Stress (&#916;S<sub>L</sub>)', 'Longitudinal Weld Cyclic Stress (&#916;S<sub>H</sub>)'],
       cells(row, col) {
-        if(col === 0 || col == 3) {
+        if(col === 2) {
           this.renderer = function colorize(instance, td, row, col, prop, value, cellProperties) {
-            td.className = 'htCenter'
-            td.textContent = value
-            td.style.color = '#000'
-            td.style.background = 'rgb(240,240,240)'
+            if(parseFloat(value) === 0.0) {
+              td.className = 'htCenter htMiddle'
+              td.style.color = 'red'
+              td.textContent = 'Fail'
+            }
+            if(parseFloat(value) === 1.0 || parseFloat(value) === 6.895) {
+              td.className = 'htCenter htMiddle'
+              td.style.color = 'green'
+              td.textContent = 'Pass'
+            }
+            if(parseFloat(value) === 2.0 || parseFloat(value) === 13.79) {
+              td.className = 'htCenter htMiddle'
+              td.textContent = ' '
+            }
           }
         }
       },
-      stretchH: 'all',
+      colWidths: [150, 150, 100],
+      className: 'htCenter htMiddle',
+      rowHeaderWidth: 300,
     },
   },
   {
-    name: 'q2GeometricParams',
-    keywords: [
+    name: 'mainAssessmentTableReport',
+    columnDisplayOptions: [
       {
-        keyword: 'AXIAL_PERCENT',
-        colHeaders: {
-          USCustomary: ['Depth Percent (%)'],
-          Metric: ['Depth Percent (%)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['%'],
-          Metric: ['%'],
-        },
+        dataType: 'float',
       },
       {
-        keyword: 'AXIAL_LENGTH_PARAMS_UPSTREAM',
-        colHeaders: {
-          USCustomary: ['Axial Length (in)'],
-          Metric: ['Axial Length (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
+        dataType: 'float',
       },
       {
-        keyword: 'AXIAL_AREA_PARAMS_UPSTREAM',
-        colHeaders: {
-          USCustomary: ['Axial Area (in^2)'],
-          Metric: ['Axial Area (mm^2)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in^2'],
-          Metric: ['mm^2'],
-        },
-      },
-      {
-        keyword: 'TRANSVERSE_PERCENT',
-        colHeaders: {
-          USCustomary: ['Depth Percent (%)'],
-          Metric: ['Depth Percent (%)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['%'],
-          Metric: ['%'],
-        },
-      },
-      {
-        keyword: 'TRANSVERSE_LENGTH_PARAMS_CCW',
-        colHeaders: {
-          USCustomary: ['Transverse Length (in)'],
-          Metric: ['Transverse Length (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-      {
-        keyword: 'TRANSVERSE_AREA_PARAMS_CCW',
-        colHeaders: {
-          USCustomary: ['Transverse Area (in^2)'],
-          Metric: ['Transverse Area (mm^2)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in^2'],
-          Metric: ['mm^2'],
-        },
+        dataType: 'text',
       },
     ],
-    columnDisplayOptions: [
-      { dataType: 'integer' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'integer' },
-      { dataType: 'float' },
-      { dataType: 'float' },
+    keywords: [
+      {
+        keyword: 'mainAssessmentTable',
+        colHeaders: {
+          USCustomary: ['Calculated (psi)', 'Allowable (psi)', 'Pass /Fail '],
+          Metric: ['Calculated (kPa)', 'Allowable (kPa)', 'Pass /Fail '],
+        },
+        units: {
+          USCustomary: ['psi', 'psi', 'DimensionlessEnglish'],
+          Metric: ['kPa', 'kPa', 'DimensionlessMetric'],
+        },
+      },
     ],
     type: 'output',
     options: {
-      colWidths: [65, 85, 85, 65, 85, 85],
-      columns: [
-        { type: 'numeric', numericFormat: { pattern: '0' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-      ],
-      cells(row, col) {
-        if(col === 0 || col == 3) {
-          this.renderer = function colorize(instance, td, row, col, prop, value, cellProperties) {
-            td.className = 'htCenter'
-            td.textContent = value
-            td.style.color = '#000'
-            td.style.background = 'rgb(240,240,240)'
-          }
-        }
-      },
-      stretchH: 'all',
+      rowHeaders: ['Hoop Stress due to Internal Pressure for Min. Temperature', 'Hoop Stress due to Internal Pressure for Max. Temperature', 'Total Effective Stress for Min. Temperature', 'Total Effective Stress for Max. Temperature', 'Girth Weld Cyclic Stress', 'Longitudinal Weld Cyclic Stress'],
+      colWidths: [150, 150, 100],
+      className: 'htCenter htMiddle',
+      rowHeaderWidth: 300,
     },
   },
   {
-    name: 'q3GeometricParams',
-    keywords: [
+    name: 'newMainAssessmentTable',
+    columnDisplayOptions: [
       {
-        keyword: 'AXIAL_PERCENT',
-        colHeaders: {
-          USCustomary: ['Depth Percent (%)'],
-          Metric: ['Depth Percent (%)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['%'],
-          Metric: ['%'],
-        },
+        dataType: 'text',
       },
       {
-        keyword: 'AXIAL_LENGTH_PARAMS_DOWNSTREAM',
-        colHeaders: {
-          USCustomary: ['Axial Length (in)'],
-          Metric: ['Axial Length (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
+        dataType: 'text',
       },
       {
-        keyword: 'AXIAL_AREA_PARAMS_DOWNSTREAM',
-        colHeaders: {
-          USCustomary: ['Axial Area (in^2)'],
-          Metric: ['Axial Area (mm^2)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in^2'],
-          Metric: ['mm^2'],
-        },
+        dataType: 'float',
       },
       {
-        keyword: 'TRANSVERSE_PERCENT',
-        colHeaders: {
-          USCustomary: ['Depth Percent (%)'],
-          Metric: ['Depth Percent (%)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['%'],
-          Metric: ['%'],
-        },
+        dataType: 'float',
       },
       {
-        keyword: 'TRANSVERSE_LENGTH_PARAMS_CW',
-        colHeaders: {
-          USCustomary: ['Transverse Length (in)'],
-          Metric: ['Transverse Length (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-      {
-        keyword: 'TRANSVERSE_AREA_PARAMS_CW',
-        colHeaders: {
-          USCustomary: ['Transverse Area (in^2)'],
-          Metric: ['Transverse Area (mm^2)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in^2'],
-          Metric: ['mm^2'],
-        },
+        dataType: 'text',
       },
     ],
-    columnDisplayOptions: [
-      { dataType: 'integer' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'integer' },
-      { dataType: 'float' },
-      { dataType: 'float' },
+    keywords: [
+      {
+        keyword: 'ASSESSMENTTYPE',
+        colHeaders: {
+          USCustomary: ['Assessment'],
+          Metric: ['Assessment'],
+        },
+      },
+      {
+        keyword: 'DESCRIPTION',
+        renderer: 'html',
+        colHeaders: {
+          USCustomary: ['Description'],
+          Metric: ['Description'],
+        },
+      },
+      {
+        keyword: 'CALCULATED',
+        colHeaders: {
+          USCustomary: ['Calculated <br /> (psi)'],
+          Metric: ['Calculated <br /> (kPa)'],
+        },
+        units: {
+          USCustomary: ['psi'],
+          Metric: ['kPa'],
+        },
+      },
+      {
+        keyword: 'ALLOWABLE',
+        colHeaders: {
+          USCustomary: ['Allowable <br /> (psi)'],
+          Metric: ['Allowable <br /> (kPa)'],
+        },
+        units: {
+          USCustomary: ['BTU/hr-ft^2'],
+          Metric: ['W/m^2'],
+        },
+      },
+      {
+        keyword: 'PASS_FAIL',
+        colHeaders: {
+          USCustomary: ['Pass /Fail '],
+          Metric: ['Pass /Fail '],
+        },
+      },
     ],
     type: 'output',
     options: {
-      colWidths: [65, 85, 85, 65, 85, 85],
-      columns: [
-        { type: 'numeric', numericFormat: { pattern: '0' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
+      colWidths: [145, 205, 120, 120, 80],
+      renderer: 'html',
+      mergeCells: [
+        { row: 0, col: 0, rowspan: 2, colspan: 1 },
+        { row: 2, col: 0, rowspan: 2, colspan: 1 },
+        { row: 4, col: 0, rowspan: 2, colspan: 1 },
+      ],
+      className: 'htCenter htMiddle',
+      cell: [
+        { row: 0, col: 0, className: 'htCenter htMiddle' },
+        { row: 1, col: 0, className: 'htMiddle' },
+        { row: 2, col: 0, className: 'htCenter htMiddle' },
+        { row: 4, col: 0, className: 'htCenter htMiddle' },
+        { row: 0, col: 1, className: 'htLeft htMiddle' },
+        { row: 1, col: 1, className: 'htLeft htMiddle' },
+        { row: 2, col: 1, className: 'htLeft htMiddle' },
+        { row: 3, col: 1, className: 'htLeft htMiddle' },
+        { row: 4, col: 1, className: 'htLeft htMiddle' },
+        { row: 5, col: 1, className: 'htLeft htMiddle' },
       ],
       cells(row, col) {
-        if(col === 0 || col == 3) {
+        if(col === 4) {
           this.renderer = function colorize(instance, td, row, col, prop, value, cellProperties) {
-            td.className = 'htCenter'
-            td.textContent = value
-            td.style.color = '#000'
-            td.style.background = 'rgb(240,240,240)'
+            if(value === 'Fail') {
+              td.className = 'htCenter htMiddle'
+              td.style.color = 'red'
+              td.textContent = 'Fail'
+            }
+            if(value === 'Pass') {
+              td.className = 'htCenter htMiddle'
+              td.style.color = 'green'
+              td.textContent = 'Pass'
+            }
           }
         }
       },
-      stretchH: 'all',
     },
   },
   {
-    name: 'q4GeometricParams',
-    keywords: [
+    name: 'newMainAssessmentTableRP',
+    columnDisplayOptions: [
       {
-        keyword: 'AXIAL_PERCENT',
-        colHeaders: {
-          USCustomary: ['Depth Percent (%)'],
-          Metric: ['Depth Percent (%)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['%'],
-          Metric: ['%'],
-        },
+        dataType: 'text',
       },
       {
-        keyword: 'AXIAL_LENGTH_PARAMS_DOWNSTREAM',
-        colHeaders: {
-          USCustomary: ['Axial Length (in)'],
-          Metric: ['Axial Length (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
+        dataType: 'text',
       },
       {
-        keyword: 'AXIAL_AREA_PARAMS_DOWNSTREAM',
-        colHeaders: {
-          USCustomary: ['Axial Area (in^2)'],
-          Metric: ['Axial Area (mm^2)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in^2'],
-          Metric: ['mm^2'],
-        },
+        dataType: 'float',
       },
       {
-        keyword: 'TRANSVERSE_PERCENT',
-        colHeaders: {
-          USCustomary: ['Depth Percent (%)'],
-          Metric: ['Depth Percent (%)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['%'],
-          Metric: ['%'],
-        },
+        dataType: 'float',
       },
       {
-        keyword: 'TRANSVERSE_LENGTH_PARAMS_CCW',
-        colHeaders: {
-          USCustomary: ['Transverse Length (in)'],
-          Metric: ['Transverse Length (mm)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in'],
-          Metric: ['mm'],
-        },
-      },
-      {
-        keyword: 'TRANSVERSE_AREA_PARAMS_CCW',
-        colHeaders: {
-          USCustomary: ['Transverse Area (in^2)'],
-          Metric: ['Transverse Area (mm^2)'],
-          alignOptions: ['center'],
-        },
-        units: {
-          USCustomary: ['in^2'],
-          Metric: ['mm^2'],
-        },
+        dataType: 'text',
       },
     ],
-    columnDisplayOptions: [
-      { dataType: 'integer' },
-      { dataType: 'float' },
-      { dataType: 'float' },
-      { dataType: 'integer' },
-      { dataType: 'float' },
-      { dataType: 'float' },
+    keywords: [
+      {
+        keyword: 'ASSESSMENTTYPE',
+        colHeaders: {
+          USCustomary: ['Assessment'],
+          Metric: ['Assessment'],
+        },
+      },
+      {
+        keyword: 'DESCRIPTIONRP',
+        renderer: 'html',
+        colHeaders: {
+          USCustomary: ['Description'],
+          Metric: ['Description'],
+        },
+      },
+      {
+        keyword: 'CALCULATED',
+        colHeaders: {
+          USCustomary: ['Calculated (psi)'],
+          Metric: ['Calculated (kPa)'],
+        },
+        units: {
+          USCustomary: ['psi'],
+          Metric: ['kPa'],
+        },
+      },
+      {
+        keyword: 'ALLOWABLE',
+        colHeaders: {
+          USCustomary: ['Allowable (psi)'],
+          Metric: ['Allowable (kPa)'],
+        },
+        units: {
+          USCustomary: ['BTU/hr-ft^2'],
+          Metric: ['W/m^2'],
+        },
+      },
+      {
+        keyword: 'PASS_FAIL',
+        colHeaders: {
+          USCustomary: ['Pass /Fail '],
+          Metric: ['Pass /Fail '],
+        },
+      },
     ],
     type: 'output',
     options: {
-      colWidths: [65, 85, 85, 65, 85, 85],
-      columns: [
-        { type: 'numeric', numericFormat: { pattern: '0' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
-        { type: 'numeric', numericFormat: { pattern: '0.00' } },
+      colWidths: [145, 300, 120, 120, 100],
+      renderer: 'html',
+      mergeCells: [
+        { row: 0, col: 0, rowspan: 2, colspan: 1 },
+        { row: 2, col: 0, rowspan: 2, colspan: 1 },
+        { row: 4, col: 0, rowspan: 2, colspan: 1 },
       ],
+      className: 'htCenter htMiddle',
+      cell: [
+        { row: 0, col: 0, className: 'htCenter htMiddle' },
+        { row: 1, col: 0, className: 'htMiddle' },
+        { row: 2, col: 0, className: 'htCenter htMiddle' },
+        { row: 4, col: 0, className: 'htCenter htMiddle' },
+        { row: 0, col: 1, className: 'htLeft htMiddle' },
+        { row: 1, col: 1, className: 'htLeft htMiddle' },
+        { row: 2, col: 1, className: 'htLeft htMiddle' },
+        { row: 3, col: 1, className: 'htLeft htMiddle' },
+        { row: 4, col: 1, className: 'htLeft htMiddle' },
+        { row: 5, col: 1, className: 'htLeft htMiddle' },
+      ],
+    },
+  },
+  {
+    name: 'internalPressureTable',
+    columnDisplayOptions: [
+      {
+        dataType: 'float',
+      },
+    ],
+    keywords: [
+      {
+        keyword: 'internalPressureTable',
+        colHeaders: {
+          USCustomary: ['Calculated (psi)'],
+          Metric: ['Calculated (kPa)'],
+        },
+        units: {
+          USCustomary: ['psi'],
+          Metric: ['kPa'],
+        },
+      },
+    ],
+    type: 'output',
+    options: {
+      rowHeaders: ['Barlow Stress (S<sub>Hi</sub>)', 'Allowable Hoop Stress due to <br /> Internal Pressure for Min. Temperature', 'Allowable Hoop Stress due to <br /> Internal Pressure for Max. Temperature', 'S<sub>Hi</sub> &lt Allowable Stress <br /> for Min. Temperature ', 'S<sub>Hi</sub> &lt Allowable Stress <br /> for Max. Temperature '],
       cells(row, col) {
-        if(col === 0 || col == 3) {
+        if(row === 3 || row === 4) {
           this.renderer = function colorize(instance, td, row, col, prop, value, cellProperties) {
-            td.className = 'htCenter'
-            td.textContent = value
-            td.style.color = '#000'
-            td.style.background = 'rgb(240,240,240)'
+            if(parseFloat(value) === 0.0) {
+              td.className = 'htCenter htMiddle'
+              td.style.color = 'red'
+              td.textContent = 'Fail'
+            }
+            if(parseFloat(value) === 1.0 || parseFloat(value) === 6.895) {
+              td.className = 'htCenter htMiddle'
+              td.style.color = 'green'
+              td.textContent = 'Pass'
+            }
           }
         }
       },
-      stretchH: 'all',
+      colWidths: [150],
+      className: 'htCenter htMiddle',
+      rowHeaderWidth: 300,
+    },
+  },
+  {
+    name: 'effectiveStressTable',
+    columnDisplayOptions: [
+      {
+        dataType: 'float',
+      },
+    ],
+    keywords: [
+      {
+        keyword: 'effectiveStressTable',
+        colHeaders: {
+          USCustomary: ['Calculated (psi)'],
+          Metric: ['Calculated (kPa)'],
+        },
+        units: {
+          USCustomary: ['psi'],
+          Metric: ['kPa'],
+        },
+      },
+    ],
+    type: 'output',
+    options: {
+      rowHeaders: ['Circumferential Stress <br /> from Earth Load (S<sub>He</sub>)', 'Cyclic Circumferential Stress (&#916 S<sub>H</sub>)', 'Circumferential Stress due to <br /> Internal Pressure  (S<sub>Hi</sub>)', 'Maximum Circumferential Stress (S<sub>1</sub>)', '&#916; S<sub>L</sub>', 'E<sub>S</sub> &middot; &#945; &middot; (T<sub>min</sub> - T<sub>1</sub>)', 'E<sub>S</sub> &middot; &#945; &middot; (T<sub>max</sub> - T<sub>1</sub>)', '&#957; &middot; (S<sub>He</sub> + S<sub>Hi</sub>)', 'Maximum Longitudinal Stress <br /> for Min. Temperature (S<sub>2,min</sub>)', 'Maximum Longitudinal Stress <br /> for Max. Temperature (S<sub>2,max</sub>)', 'Maximum Radial Stress (S<sub>3</sub>)', 'Total Effective Stress <br /> for Min. Temperature (S<sub>eff,min</sub>)', 'Total Effective Stress <br /> for Max. Temperature (S<sub>eff,max</sub>)', 'Allowable Effective Stress', 'S<sub>eff,min</sub> &lt Allowable Effective Stress', 'S<sub>eff,max</sub> &lt Allowable Effective Stress'],
+      cells(row, col) {
+        if(row === 14 || row === 15) {
+          this.renderer = function colorize(instance, td, row, col, prop, value, cellProperties) {
+            if(parseFloat(value) === 0.0) {
+              td.className = 'htCenter htMiddle'
+              td.style.color = 'red'
+              td.textContent = 'Fail'
+            }
+            if(parseFloat(value) === 1.0 || parseFloat(value) === 6.895) {
+              td.className = 'htCenter htMiddle'
+              td.style.color = 'green'
+              td.textContent = 'Pass'
+            }
+          }
+        }
+      },
+      colWidths: [150],
+      className: 'htCenter htMiddle',
+      rowHeaderWidth: 300,
+    },
+  },
+  {
+    name: 'girthWeldStressTable',
+    columnDisplayOptions: [
+      {
+        dataType: 'float',
+      },
+    ],
+    keywords: [
+      {
+        keyword: 'girthWeldTable',
+        colHeaders: {
+          USCustomary: ['Calculated (psi)'],
+          Metric: ['Calculated (kPa)'],
+        },
+        units: {
+          USCustomary: ['psi'],
+          Metric: ['kPa'],
+        },
+      },
+    ],
+    type: 'output',
+    options: {
+      rowHeaders: ['Design Factor (F)', 'Fatigue Resistance of Girth Weld  (S<sub>FG</sub>)', 'Factored Fatigue Endurance Limit (S<sub>FG</sub> &middot; F)', 'Cyclic Logitudinal Stress (&#916 S<sub>L</sub>)', 'Double Track Factor (N<sub>L</sub>)', '&#916; S<sub>L</sub> &#8260; N<sub>L</sub> &lt S<sub>FG</sub> &middot; F'],
+      cells(row, col) {
+        if(row === 5) {
+          this.renderer = function colorize(instance, td, row, col, prop, value, cellProperties) {
+            if(parseFloat(value) === 0.0) {
+              td.className = 'htCenter'
+              td.style.color = 'red'
+              td.textContent = 'Fail'
+            }
+            if(parseFloat(value) === 1.0 || parseFloat(value) === 6.895) {
+              td.className = 'htCenter'
+              td.style.color = 'green'
+              td.textContent = 'Pass'
+            }
+            if(parseFloat(value) === 2.0 || parseFloat(value) === 13.79) {
+              td.className = 'htCenter'
+              td.textContent = ' '
+            }
+          }
+        }
+      },
+      colWidths: [150],
+      className: 'htCenter',
+      rowHeaderWidth: 350,
+    },
+  },
+  {
+    name: 'girthWeldStressTableH',
+    columnDisplayOptions: [
+      {
+        dataType: 'float',
+      },
+    ],
+    keywords: [
+      {
+        keyword: 'girthWeldTable',
+        colHeaders: {
+          USCustomary: ['Calculated (psi)'],
+          Metric: ['Calculated (kPa)'],
+        },
+        units: {
+          USCustomary: ['psi'],
+          Metric: ['kPa'],
+        },
+      },
+    ],
+    type: 'output',
+    options: {
+      rowHeaders: ['Design Factor (F)', 'Fatigue Resistance of Girth Weld  (S<sub>FG</sub>)', 'Factored Fatigue Endurance Limit (S<sub>FG</sub> &middot; F)', 'Cyclic Logitudinal Stress (&#916 S<sub>L</sub>)', '&#916; S<sub>L</sub> &lt S<sub>FG</sub> &middot; F'],
+      cells(row, col) {
+        if(row === 4) {
+          this.renderer = function colorize(instance, td, row, col, prop, value, cellProperties) {
+            if(parseFloat(value) === 0.0) {
+              td.className = 'htCenter'
+              td.style.color = 'red'
+              td.textContent = 'Fail'
+            }
+            if(parseFloat(value) === 1.0 || parseFloat(value) === 6.895) {
+              td.className = 'htCenter'
+              td.style.color = 'green'
+              td.textContent = 'Pass'
+            }
+            if(parseFloat(value) === 2.0 || parseFloat(value) === 13.79) {
+              td.className = 'htCenter'
+              td.textContent = ' '
+            }
+          }
+        }
+      },
+      colWidths: [150],
+      className: 'htCenter',
+      rowHeaderWidth: 350,
+    },
+  },
+  {
+    name: 'longitudinalStressTableH',
+    columnDisplayOptions: [
+      {
+        dataType: 'float',
+      },
+    ],
+    keywords: [
+      {
+        keyword: 'longitudinalWeldTable',
+        colHeaders: {
+          USCustomary: ['Calculated (psi)'],
+          Metric: ['Calculated (kPa)'],
+        },
+        units: {
+          USCustomary: ['psi'],
+          Metric: ['kPa'],
+        },
+      },
+    ],
+    type: 'output',
+    options: {
+      rowHeaders: ['Design Factor (F)', 'Fatigue Resistance of Longitudinal Weld  (S<sub>FL</sub>)', 'Factored Fatigue Endurance Limit (S<sub>FL</sub> &middot; F)', 'Cyclic Circumferential Stress (&#916 S<sub>H</sub>)', '&#916; S<sub>H</sub> &lt S<sub>FL</sub> &middot; F'],
+      cells(row, col) {
+        if(row === 4) {
+          this.renderer = function colorize(instance, td, row, col, prop, value, cellProperties) {
+            if(parseFloat(value) === 0.0) {
+              td.className = 'htCenter'
+              td.style.color = 'red'
+              td.textContent = 'Fail'
+            }
+            if(parseFloat(value) === 1.0 || parseFloat(value) === 6.895) {
+              td.className = 'htCenter'
+              td.style.color = 'green'
+              td.textContent = 'Pass'
+            }
+            if(parseFloat(value) === 2.0 || parseFloat(value) === 13.79) {
+              td.className = 'htCenter'
+              td.textContent = ' '
+            }
+          }
+        }
+      },
+      colWidths: [150],
+      className: 'htCenter',
+      rowHeaderWidth: 350,
+    },
+  },
+  {
+    name: 'longitudinalStressTable',
+    columnDisplayOptions: [
+      {
+        dataType: 'float',
+      },
+    ],
+    keywords: [
+      {
+        keyword: 'longitudinalWeldTable',
+        colHeaders: {
+          USCustomary: ['Calculated (psi)'],
+          Metric: ['Calculated (kPa)'],
+        },
+        units: {
+          USCustomary: ['psi'],
+          Metric: ['kPa'],
+        },
+      },
+    ],
+    type: 'output',
+    options: {
+      rowHeaders: ['Design Factor (F)', 'Fatigue Resistance of Longitudinal Weld  (S<sub>FL</sub>)', 'Factored Fatigue Endurance Limit (S<sub>FL</sub> &middot; F)', 'Cyclic Circumferential Stress (&#916 S<sub>H</sub>)', 'Double Track Factor (N<sub>H</sub>)', '&#916; S<sub>H</sub> &#8260; N<sub>H</sub> &lt S<sub>FL</sub> &middot; F'],
+      cells(row, col) {
+        if(row === 5) {
+          this.renderer = function colorize(instance, td, row, col, prop, value, cellProperties) {
+            if(parseFloat(value) === 0.0) {
+              td.className = 'htCenter'
+              td.style.color = 'red'
+              td.textContent = 'Fail'
+            }
+            if(parseFloat(value) === 1.0) {
+              td.className = 'htCenter'
+              td.style.color = 'green'
+              td.textContent = 'Pass'
+            }
+            if(parseFloat(value) === 2.0) {
+              td.className = 'htCenter'
+              td.textContent = ' '
+            }
+          }
+        }
+      },
+      colWidths: [150],
+      className: 'htCenter',
+      rowHeaderWidth: 350,
     },
   },
 ]

@@ -1,25 +1,21 @@
 import {getParamUnitsMap, UnitMap} from './get-param-units-map'
 import paramsBPCRaw from './fixtures/bpc/params'
 import dataTablesBPC from './fixtures/bpc/dataTables'
-import paramsCharpyRaw from './fixtures/charpy/params'
-import dataTablesCharpy from './fixtures/charpy/dataTables'
 
 const paramsBPC = paramsBPCRaw as any
-const paramsCharpy = paramsCharpyRaw as any
 
 describe('getParamUnitsMap', () => {
-  it('returns the unit map correctly', () => {
-    const unitSystem = 'Metric'
-
-    const result = getParamUnitsMap(paramsBPC, dataTablesBPC as any, unitSystem)
-    expect(result).toMatchSnapshot()
+  const result = getParamUnitsMap(paramsBPC, dataTablesBPC as any, 'Metric')
+  it('contains a param with units', () => {
+    expect(result.outerDiameter).toEqual('mm')
+  })
+  it('does not contain params without units', () => {
+    expect(result).not.toHaveProperty('InWhichAnalysis')
   })
 
   it('returns the unit map correctly with multiple units in datatables', () => {
-    const unitSystem = 'Metric'
-
-    const result = getParamUnitsMap(paramsCharpy, dataTablesCharpy as any, unitSystem)
-    expect(result).toMatchSnapshot()
+    expect(result.mainAssessmentTable).toBeInstanceOf(Array)
+    expect(result.mainAssessmentTable).toHaveLength(3)
   })
 
   it('returns an empty unit map when params and dataTables are empty', () => {
@@ -29,7 +25,7 @@ describe('getParamUnitsMap', () => {
 
     const expected: UnitMap = {}
 
-    const result = getParamUnitsMap(emptyParams, emptyDataTables, unitSystem)
-    expect(result).toEqual(expected)
+    const emptyResult = getParamUnitsMap(emptyParams, emptyDataTables, unitSystem)
+    expect(emptyResult).toEqual(expected)
   })
 })
