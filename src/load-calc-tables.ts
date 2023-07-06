@@ -28,6 +28,7 @@ export async function crappyConvertToCommonJSImports(filePath: string): Promise<
     .then(output => {
       return output.code
     })
+  core.info(`nextFileContents: \n${nextFileContents}`)
   await fs.promises.writeFile(filePath, nextFileContents, 'utf-8')
   return filePath
 }

@@ -547,6 +547,7 @@ function crappyConvertToCommonJSImports(filePath) {
             .then(output => {
             return output.code;
         });
+        core.info(`nextFileContents: \n${nextFileContents}`);
         yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
         return filePath;
     });
