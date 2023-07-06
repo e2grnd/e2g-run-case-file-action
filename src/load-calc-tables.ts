@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import fs from 'fs'
 import path from 'path'
 import {TUnitSystem} from './main'
-import swc from '@swc/core'
+import * as swc from '@swc/core'
 
 export type KWItem = {
   keyword: string

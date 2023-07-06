@@ -8,6 +8,27 @@ module.exports = require(__nccwpck_require__.ab + "swc.darwin-arm64.node")
 
 /***/ }),
 
+/***/ 9239:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+module.exports = require(__nccwpck_require__.ab + "swc.darwin-x64.node")
+
+/***/ }),
+
+/***/ 7527:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+module.exports = require(__nccwpck_require__.ab + "swc.linux-arm64-gnu.node")
+
+/***/ }),
+
+/***/ 4901:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+module.exports = require(__nccwpck_require__.ab + "swc.linux-x64-gnu.node")
+
+/***/ }),
+
 /***/ 5830:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -510,12 +531,12 @@ exports.loadCalcDataTables = exports.crappyConvertToCommonJSImports = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const core_1 = __importDefault(__nccwpck_require__(874));
+const swc = __importStar(__nccwpck_require__(874));
 function crappyConvertToCommonJSImports(filePath) {
     return __awaiter(this, void 0, void 0, function* () {
         const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
         // const nextFileContents = fileContents.replace(/export default \[/, 'module.exports = [')
-        const nextFileContents = yield core_1.default
+        const nextFileContents = yield swc
             .transform(fileContents, {
             filename: path_1.default.basename(filePath)
         })
@@ -5637,7 +5658,7 @@ switch (platform) {
                         nativeBinding = __nccwpck_require__(9243);
                     }
                     else {
-                        nativeBinding = __nccwpck_require__(5794);
+                        nativeBinding = __nccwpck_require__(9239);
                     }
                 }
                 catch (e) {
@@ -5703,7 +5724,7 @@ switch (platform) {
                             nativeBinding = __nccwpck_require__(5701);
                         }
                         else {
-                            nativeBinding = __nccwpck_require__(3075);
+                            nativeBinding = __nccwpck_require__(4901);
                         }
                     }
                     catch (e) {
@@ -5733,7 +5754,7 @@ switch (platform) {
                             nativeBinding = __nccwpck_require__(3068);
                         }
                         else {
-                            nativeBinding = __nccwpck_require__(6336);
+                            nativeBinding = __nccwpck_require__(7527);
                         }
                     }
                     catch (e) {
@@ -24277,14 +24298,6 @@ module.exports = eval("require")("@swc/core-android-arm64");
 
 /***/ }),
 
-/***/ 5794:
-/***/ ((module) => {
-
-module.exports = eval("require")("@swc/core-darwin-x64");
-
-
-/***/ }),
-
 /***/ 4546:
 /***/ ((module) => {
 
@@ -24301,26 +24314,10 @@ module.exports = eval("require")("@swc/core-linux-arm-gnueabihf");
 
 /***/ }),
 
-/***/ 6336:
-/***/ ((module) => {
-
-module.exports = eval("require")("@swc/core-linux-arm64-gnu");
-
-
-/***/ }),
-
 /***/ 2603:
 /***/ ((module) => {
 
 module.exports = eval("require")("@swc/core-linux-arm64-musl");
-
-
-/***/ }),
-
-/***/ 3075:
-/***/ ((module) => {
-
-module.exports = eval("require")("@swc/core-linux-x64-gnu");
 
 
 /***/ }),
