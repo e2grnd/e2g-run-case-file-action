@@ -20,3 +20,4 @@ inputs:
 runs:
   using: "node16"
   main: "dist/index.js"
+  pre: "dist/pre/index.js"
