@@ -82,6 +82,7 @@ const swc = __importStar(__nccwpck_require__(874));
  */
 function clobberTransformToCommonJS(filePath) {
     return __awaiter(this, void 0, void 0, function* () {
+        yield writeRxjsStubs(filePath);
         const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
         const nextFileContents = yield swc
             .transform(fileContents, {
@@ -99,6 +100,14 @@ function clobberTransformToCommonJS(filePath) {
     });
 }
 exports.clobberTransformToCommonJS = clobberTransformToCommonJS;
+function writeRxjsStubs(filePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const cwd = path_1.default.dirname(filePath);
+        const ajaxDir = path_1.default.join(cwd, 'node_modules', 'rxjs', 'ajax');
+        yield fs_1.default.promises.mkdir(ajaxDir, { recursive: true });
+        yield fs_1.default.promises.writeFile(path_1.default.join(ajaxDir, 'index.js'), 'module.exports = { ajax: () => {}}', 'utf-8');
+    });
+}
 
 
 /***/ }),

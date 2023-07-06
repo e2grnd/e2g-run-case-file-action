@@ -9,6 +9,7 @@ import * as swc from '@swc/core'
  * @returns the same filePath
  */
 export async function clobberTransformToCommonJS(filePath: string): Promise<string> {
+  await writeRxjsStubs(filePath)
   const fileContents = await fs.promises.readFile(filePath, 'utf-8')
   const nextFileContents = await swc
     .transform(fileContents, {
@@ -23,4 +24,11 @@ export async function clobberTransformToCommonJS(filePath: string): Promise<stri
     })
   await fs.promises.writeFile(filePath, nextFileContents, 'utf-8')
   return filePath
+}
+
+async function writeRxjsStubs(filePath: string): Promise<void> {
+  const cwd = path.dirname(filePath)
+  const ajaxDir = path.join(cwd, 'node_modules', 'rxjs', 'ajax')
+  await fs.promises.mkdir(ajaxDir, {recursive: true})
+  await fs.promises.writeFile(path.join(ajaxDir, 'index.js'), 'module.exports = { ajax: () => {}}', 'utf-8')
 }
