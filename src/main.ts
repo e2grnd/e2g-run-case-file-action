@@ -37,6 +37,8 @@ async function run(): Promise<void> {
     let dataTables: TDataTables = []
     try {
       dataTables = await loadCalcDataTables()
+      core.info('dataTables.js found')
+      core.debug(`dataTables: ${JSON.stringify(dataTables, undefined, '  ')}`)
     } catch (err) {
       //pass
     }

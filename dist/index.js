@@ -595,6 +595,8 @@ function run() {
             let dataTables = [];
             try {
                 dataTables = yield (0, load_calc_tables_1.loadCalcDataTables)();
+                core.info('dataTables.js found');
+                core.debug(`dataTables: ${JSON.stringify(dataTables, undefined, '  ')}`);
             }
             catch (err) {
                 //pass
