@@ -13,7 +13,7 @@ interface DataTableItem {
 }
 export type TDataTables = DataTableItem[]
 
-async function crappyConvertToCommonJSImports(filePath: string): Promise<string> {
+export async function crappyConvertToCommonJSImports(filePath: string): Promise<string> {
   const fileContents = await fs.promises.readFile(filePath, 'utf-8')
   const nextFileContents = fileContents.replace(/^export default \[/, 'module.exports = [')
   await fs.promises.writeFile(filePath, nextFileContents, 'utf-8')

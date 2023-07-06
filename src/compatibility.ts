@@ -1,5 +1,4 @@
 /* eslint-disable github/array-foreach */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {fromJS} from 'immutable'
 import find from 'lodash.find'
 

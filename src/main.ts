@@ -1,10 +1,10 @@
-/* eslint-disable github/array-foreach */
 import * as core from '@actions/core'
 import {loadCalcDescriptor} from './load-calc-descriptor'
 import {loadCalcExamples} from './load-calc-examples'
 import {submitExample} from './submit-example'
-import {TParams, loadCalcParams} from './load-calc-params'
+import {loadCalcParams} from './load-calc-params'
 import {TDataTables, loadCalcDataTables} from './load-calc-tables'
+import {getParamUnitsMap} from './get-param-units-map'
 
 export type TUnitSystem = 'Metric' | 'USCustomary'
 export type TExampleItem = {
@@ -23,27 +23,6 @@ function isExampleGroup(x: TExampleItem | TExampleGroup): x is TExampleGroup {
 }
 
 export const POLLING_INTERVAL = 2000
-
-export type UnitMap = Record<string, string | string[]>
-
-function getParamUnitsMap(params: TParams, dataTables: TDataTables, unitSystem: TUnitSystem): UnitMap {
-  const dtUnits = dataTables.reduce((acc, t) => {
-    if (t.keywords) {
-      t.keywords.forEach(kw => {
-        if (kw.units) {
-          acc[kw.keyword] = kw.units[unitSystem]
-        }
-      })
-    }
-    return acc
-  }, {} as UnitMap)
-  return params.reduce((acc: UnitMap, p) => {
-    if (p.units) {
-      acc[p.keyword] = p.units[unitSystem]
-    }
-    return acc
-  }, dtUnits)
-}
 
 async function run(): Promise<void> {
   try {

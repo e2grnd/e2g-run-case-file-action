@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.convertCase = exports.requiresConversion = exports.fixNumericTypes = exports.normalizePayload = exports.requestMetadata = void 0;
 /* eslint-disable github/array-foreach */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const immutable_1 = __nccwpck_require__(3609);
 const lodash_find_1 = __importDefault(__nccwpck_require__(5702));
 const requestMetadata = (options) => {
@@ -215,6 +214,36 @@ const requiresConversion = (calcCase) => {
 exports.requiresConversion = requiresConversion;
 const convertCase = (calcCase) => (0, exports.fixNumericTypes)(calcCase);
 exports.convertCase = convertCase;
+
+
+/***/ }),
+
+/***/ 7302:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getParamUnitsMap = void 0;
+function getParamUnitsMap(params, dataTables, unitSystem) {
+    const dtUnits = dataTables.reduce((acc, t) => {
+        if (t.keywords) {
+            t.keywords.forEach(kw => {
+                if (kw.units) {
+                    acc[kw.keyword] = kw.units[unitSystem];
+                }
+            });
+        }
+        return acc;
+    }, {});
+    return params.reduce((acc, p) => {
+        if (p.units) {
+            acc[p.keyword] = p.units[unitSystem];
+        }
+        return acc;
+    }, dtUnits);
+}
+exports.getParamUnitsMap = getParamUnitsMap;
 
 
 /***/ }),
@@ -470,7 +499,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.loadCalcDataTables = void 0;
+exports.loadCalcDataTables = exports.crappyConvertToCommonJSImports = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
@@ -482,6 +511,7 @@ function crappyConvertToCommonJSImports(filePath) {
         return filePath;
     });
 }
+exports.crappyConvertToCommonJSImports = crappyConvertToCommonJSImports;
 function loadCalcDataTables() {
     return __awaiter(this, void 0, void 0, function* () {
         const calcDir = core.getInput('calc-dir', { required: true });
@@ -541,35 +571,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.POLLING_INTERVAL = void 0;
-/* eslint-disable github/array-foreach */
 const core = __importStar(__nccwpck_require__(2186));
 const load_calc_descriptor_1 = __nccwpck_require__(1317);
 const load_calc_examples_1 = __nccwpck_require__(2741);
 const submit_example_1 = __nccwpck_require__(4715);
 const load_calc_params_1 = __nccwpck_require__(6322);
 const load_calc_tables_1 = __nccwpck_require__(8243);
+const get_param_units_map_1 = __nccwpck_require__(7302);
 function isExampleGroup(x) {
     return typeof x.members !== 'undefined' && Array.isArray(x.members);
 }
 exports.POLLING_INTERVAL = 2000;
-function getParamUnitsMap(params, dataTables, unitSystem) {
-    const dtUnits = dataTables.reduce((acc, t) => {
-        if (t.keywords) {
-            t.keywords.forEach(kw => {
-                if (kw.units) {
-                    acc[kw.keyword] = kw.units[unitSystem];
-                }
-            });
-        }
-        return acc;
-    }, {});
-    return params.reduce((acc, p) => {
-        if (p.units) {
-            acc[p.keyword] = p.units[unitSystem];
-        }
-        return acc;
-    }, dtUnits);
-}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -587,12 +599,12 @@ function run() {
             catch (err) {
                 //pass
             }
-            const calculatorUnitsMap = getParamUnitsMap(params, dataTables, calculatorUnitSystem);
+            const calculatorUnitsMap = (0, get_param_units_map_1.getParamUnitsMap)(params, dataTables, calculatorUnitSystem);
             core.debug(`calculatorUnitsMap: ${JSON.stringify(calculatorUnitsMap, undefined, '  ')}`);
             yield Promise.all(Object.entries(examples).flatMap(([_unitSystem, examplesByUnitSystem]) => {
                 core.debug(`examplesByUnitSystem: ${JSON.stringify(examplesByUnitSystem)}`);
                 const unitSystem = _unitSystem;
-                const exampleUnitsMap = getParamUnitsMap(params, dataTables, unitSystem);
+                const exampleUnitsMap = (0, get_param_units_map_1.getParamUnitsMap)(params, dataTables, unitSystem);
                 core.debug(`exampleUnitsMap: ${JSON.stringify(exampleUnitsMap, undefined, '  ')}`);
                 return examplesByUnitSystem.map((ex) => __awaiter(this, void 0, void 0, function* () {
                     if (isExampleGroup(ex)) {
@@ -859,7 +871,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.submitExample = void 0;
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const core = __importStar(__nccwpck_require__(2186));
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const fs_1 = __importDefault(__nccwpck_require__(7147));

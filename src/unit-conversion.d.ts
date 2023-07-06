@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 declare type InputData = {
   params: any
   tables: any

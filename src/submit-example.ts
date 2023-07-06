@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as core from '@actions/core'
 import fetch from 'node-fetch'
 import fs from 'fs'
@@ -6,7 +5,8 @@ import {normalizePayload} from './compatibility'
 import {protoPayload} from './serialize'
 import {convertToCalculatorUnits} from './unit-conversion'
 import path from 'path'
-import {POLLING_INTERVAL, TExampleItem, TUnitSystem, UnitMap} from './main'
+import {POLLING_INTERVAL, TExampleItem, TUnitSystem} from './main'
+import {UnitMap} from './get-param-units-map'
 
 enum JobStatus {
   PENDING = 0,
