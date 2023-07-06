@@ -360,7 +360,7 @@ const path_1 = __importDefault(__nccwpck_require__(1017));
 function crappyConvertToCommonJSImports(filePath) {
     return __awaiter(this, void 0, void 0, function* () {
         const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
-        const nextFileContents = fileContents.replace(/^export default \{/, 'module.exports = {');
+        const nextFileContents = fileContents.replace(/export default \{/, 'module.exports = {');
         yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
         return filePath;
     });
@@ -432,7 +432,7 @@ const path_1 = __importDefault(__nccwpck_require__(1017));
 function crappyConvertToCommonJSImports(filePath) {
     return __awaiter(this, void 0, void 0, function* () {
         const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
-        const nextFileContents = fileContents.replace(/^export default \[/, 'module.exports = [');
+        const nextFileContents = fileContents.replace(/export default \[/, 'module.exports = [');
         yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
         return filePath;
     });
@@ -506,7 +506,7 @@ const path_1 = __importDefault(__nccwpck_require__(1017));
 function crappyConvertToCommonJSImports(filePath) {
     return __awaiter(this, void 0, void 0, function* () {
         const fileContents = yield fs_1.default.promises.readFile(filePath, 'utf-8');
-        const nextFileContents = fileContents.replace(/^export default \[/, 'module.exports = [');
+        const nextFileContents = fileContents.replace(/export default \[/, 'module.exports = [');
         yield fs_1.default.promises.writeFile(filePath, nextFileContents, 'utf-8');
         return filePath;
     });
