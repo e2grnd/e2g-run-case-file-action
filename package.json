@@ -36,7 +36,7 @@
     "@types/jest": "^29.5.2",
     "@types/lodash.find": "^4.6.7",
     "@types/node": "^18.16.19",
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^5.61.0",
     "@vercel/ncc": "^0.36.1",
     "eslint": "^8.44.0",
