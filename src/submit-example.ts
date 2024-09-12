@@ -61,6 +61,7 @@ export async function submitExample(ex: TExampleItem, exampleUnitSystem: TUnitSy
     method: 'POST',
     headers: {
       'x-internal-auth-secret': authSecret,
+      Authorization: authSecret,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(protoAsJSON)

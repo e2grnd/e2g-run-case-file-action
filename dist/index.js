@@ -1012,6 +1012,7 @@ function submitExample(ex, exampleUnitSystem, calculatorUnitSystem, exampleUnitM
             method: 'POST',
             headers: {
                 'x-internal-auth-secret': authSecret,
+                'Authorization': authSecret,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(protoAsJSON)
